@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Track</title>
+    <link rel="stylesheet" href="../../static/record_track.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
+</head>
+<body>
+<div>
+    <div>
+        <p>Tempo</p>
+        <p id="tempo"></p>
+    </div>
+    <div>
+        <p>Time Signature</p>
+        <p id="top_sig"></p>
+        <p id="bottom_sig"></p>
+    </div>
+    <button id="record">record</button>
+    <div>metrognome</div>
+    <button>redo</button>
+    <div>
+        <input onclick="play()" type="submit" value="submit">
+    </div>
+    <form id="form">
+        <div id='submit'>
+            <button>Submit</button>
+        </div>
+    </form>
+</div>
+<script>
+    const score_id =
+    {{score_id}}
+    const track_id =
+    {{track_id}}
+    const bars =
+    {{bars}}
+    const bars_test = [
+        {tempo: 100, top_sig: 4, bottom_sig: 4},
+        {tempo: 100, top_sig: 4, bottom_sig: 4},
+        {tempo: 120, top_sig: 5, bottom_sig: 2},
+        {tempo: 200, top_sig: 8, bottom_sig: 10}
+    ]
+</script>
+<script src="../../static/record_track.js"></script>
+<script src="../../static/metronome.js"></script>
+</body>
+</html>

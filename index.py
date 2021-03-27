@@ -44,6 +44,12 @@ def api_edit_score(score_id):
     return ''
 
 
+@app.route('/record_track/<int:score_id>/<int:track_id>')
+def record_track(score_id, track_id):
+    # TODO: Get associated track's score info with all bars from database
+    return render_template('record_track.html', score_id=score_id, track_id=track_id, bars=[])
+
+
 @app.route('/api/upload_track/<int:score_id>/<int:track_id>', methods=['POST'])
 def api_upload_track(score_id, track_id):
     hello = AudioSegment.from_mp3("audio/hello.mp3")
