@@ -1,0 +1,7 @@
+{
+  "name": "HelloWorldHack",
+  "version": "1.0.0",
+  "dependencies": {
+    "vexflow": "^3.0.9"
+  }
+}

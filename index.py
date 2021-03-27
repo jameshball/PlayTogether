@@ -1,15 +1,22 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-db = SQLAlchemy(app)
+
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# db = SQLAlchemy(app)
 
 
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return render_template('index.html')
+
+
+@app.route('/new_score')
+def new_score():
+    return render_template('new_score.html')
 
 
 @app.route('/hello/<first_name>/<last_name>')
