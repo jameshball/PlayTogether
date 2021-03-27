@@ -1,26 +1,20 @@
 <html>
 
 <head>
-  <script>
-    var tik = new Audio({
-      {
-        url_for('static', filename = 'tik.mp3')
-      }
-    });
-    var tok = new Audio({
-      {
-        url_for('static', filename = 'tok.mp3')
-      }
-    });
-  </script>
-  <script type="text/javascript" src="{{ url_for('static', filename = 'record.js') }} ">
+  <script type="text/javascript">
+    var tik = new Audio("{{ url_for('static', filename = 'tik.mp3') }}");
+    var tok = new Audio("{{ url_for('static', filename = 'tok.mp3') }}");
+
+    function play() {
+      tik.play();
+    }
   </script>
   <title>
     hello uwu hack
   </title>
 </head>
 
-<body>
+<body onload="play()">
   <div>
     <div>
       <p>
