@@ -1,6 +1,5 @@
 import os
-
-from flask import Flask, send_file, render_template
+from flask import Flask, render_template, send_file, request
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
@@ -11,25 +10,42 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
+
 from model import *
 
 
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return render_template('index.html')
 
 
-@app.route('/hello/<first_name>/<last_name>')
-def create(first_name=None, last_name=None):
-    return 'Hello ' + first_name + ',' + last_name
+@app.route('/api/new_score', methods=['POST'])
+def api_new_score():
+    # TODO: Create new empty score entry in database and return its score_id
+    score_id = 0
 
-@app.route('/record/<int:score_id>')
-def record(score_id):
-    return render_template("record.html")
+    return score_id
 
-@app.route('/upload/<int:score_id>/<int:track_id>', methods=['POST'])
-def upload(score_id, track_id):
-    # Temporary code that demonstrates usage
+
+@app.route('/edit_score/<int:score_id>')
+def edit_score(score_id):
+    return render_template('edit_score.html', score_id=score_id)
+
+
+@app.route('/api/edit_score/<int:score_id>', methods=['POST'])
+def api_edit_score(score_id):
+    content = request.json
+    bars = content['bars']
+
+    for bar in bars:
+        # TODO: Update score with id score_id on database (delete and add)
+        pass
+
+    return ''
+
+
+@app.route('/api/upload_track/<int:score_id>/<int:track_id>', methods=['POST'])
+def api_upload_track(score_id, track_id):
     hello = AudioSegment.from_mp3("audio/hello.mp3")
     world = AudioSegment.from_mp3("audio/world.mp3")
     output = hello.overlay(world)
