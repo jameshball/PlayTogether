@@ -24,8 +24,9 @@ def create(first_name=None, last_name=None):
     return 'Hello ' + first_name + ',' + last_name
 
 
-@app.route('/audio/')
-def audio():
+@app.route('/upload/<int:score_id>/<int:track_id>', methods=['POST'])
+def upload(score_id, track_id):
+    # Temporary code that demonstrates usage
     hello = AudioSegment.from_mp3("audio/hello.mp3")
     world = AudioSegment.from_mp3("audio/world.mp3")
     output = hello.overlay(world)
