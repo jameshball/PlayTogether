@@ -48,11 +48,20 @@ def api_edit_score(score_id):
 
 @app.route('/api/upload_track/<int:score_id>/<int:track_id>', methods=['POST'])
 def api_upload_track(score_id, track_id):
-    hello = AudioSegment.from_mp3("audio/hello.mp3")
-    world = AudioSegment.from_mp3("audio/world.mp3")
-    output = hello.overlay(world)
-    output.export("audio/merged.mp3", format="mp3")
-    return send_file('audio/merged.mp3')
+    if request.content_type != "audio/mpeg":
+        return "bad mime type", 415
+
+    track = Track.query.join(Score).filter(Score.id == score_id and Track.id == track_id).first_or_404()
+    Sample(file=request.data, track=track)
+
+    db.session.commit()
+
+    return ''
+    # hello = AudioSegment.from_mp3("audio/hello.mp3")
+    # world = AudioSegment.from_mp3("audio/world.mp3")
+    # output = hello.overlay(world)
+    # output.export("audio/merged.mp3", format="mp3")
+    # return send_file('audio/merged.mp3')
 
 
 if __name__ == '__main__':
