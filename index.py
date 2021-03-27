@@ -13,6 +13,7 @@ if 'DATABASE_URL' in os.environ:
 db = SQLAlchemy(app)
 from model import *
 
+db.create_all()
 
 @app.route('/')
 def index():
