@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, send_file
+from flask import Flask, send_file, render_template
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
@@ -23,6 +23,9 @@ def index():
 def create(first_name=None, last_name=None):
     return 'Hello ' + first_name + ',' + last_name
 
+@app.route('/record/<int:score_id>')
+def record(score_id):
+    return render_template("record.html")
 
 @app.route('/upload/<int:score_id>/<int:track_id>', methods=['POST'])
 def upload(score_id, track_id):
