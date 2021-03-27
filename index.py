@@ -3,7 +3,6 @@ from flask import Flask, render_template, send_file, request
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
-from model import *
 
 app = Flask(__name__)
 
@@ -12,6 +11,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
+from model import *
 
 
 @app.route('/')
