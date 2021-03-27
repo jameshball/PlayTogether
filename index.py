@@ -3,6 +3,8 @@ from flask import Flask, render_template, send_file
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
+# from model import *
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -10,7 +12,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
-from model import *
 
 
 @app.route('/')
@@ -21,6 +22,11 @@ def index():
 @app.route('/new_score')
 def new_score():
     return render_template('new_score.html')
+
+
+@app.route('/api/new_score', methods=['POST'])
+def api_new_score():
+    return 'hello'
 
 
 @app.route('/hello/<first_name>/<last_name>')
