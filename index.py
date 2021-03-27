@@ -1,3 +1,4 @@
+import json
 import os
 from flask import Flask, render_template, send_file, request, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -38,9 +39,9 @@ def api_edit_score(score_id):
     content = request.json
     bars = content['bars']
 
-    for bar in bars:
-        # TODO: Update score with id score_id on database (delete and add)
-        pass
+    score = Score.query.get_or_404(score_id)
+    score.bars = json.dumps(bars)
+    db.session.commit()
 
     return ''
 

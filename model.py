@@ -4,25 +4,18 @@ from sqlalchemy.sql import func
 
 class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(80), nullable=True)
+    name = db.Column(db.String(), nullable=True)
+    bars = db.Column(db.Text, nullable=True)
 
     tracks = db.relationship('Track', backref='score')
-    bars = db.relationship('Bar', backref='score')
 
     def __repr__(self):
         return f"<Score {self.name}>"
 
 
-class Bar(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tempo = db.Column(db.Integer, nullable=False)
-    timesig_top = db.Column(db.Integer, nullable=True)
-    score_id = db.Column(db.Integer, db.ForeignKey('score.id'), nullable=False)
-
-
 class Track(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String())
     score_id = db.Column(db.Integer, db.ForeignKey('score.id'), nullable=False)
 
     samples = db.relationship('Sample', backref='track')
