@@ -2,72 +2,101 @@ VF = Vex.Flow;
 
 // Create an SVG renderer and attach it to the DIV element named "boo".
 const svg = document.getElementById("score");
-svg.setAttribute('width', '100%');
-svg.setAttribute('height', '100%');
-svg.setAttribute('viewBox', '0 0 500 500'); // or whatever your defaults were
-svg.setAttribute('preserveAspectRatio', 'xMidYMid');
 
-const renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
-
-// Size our SVG:
-let currMaxHeight = 100;
-renderer.resize(800, currMaxHeight);
-
-// And get a drawing context:
-const context = renderer.getContext();
 
 const bars = [];
-let prevTimeSig = null;
-let prevMeasure = null;
-let currWidth = 0;
+const barTimeSigs = [];
+let buttons = [];
 
-const staves = []
+function createDeleteButton(barNum) {
+    const button = document.createElement("button");
+    button.innerHTML = "do something";
 
-function renderScore(staves) {
-    for (let i = 0; i < staves.length; i++) {
-        staves[i].draw()
+    const body = document.getElementById("sheet-music");
+    body.appendChild(button);
+    buttons.push(button)
+
+    button.addEventListener("click", function () {
+        removeStave(barNum)
+    });
+}
+
+function removeDeleteButtons() {
+    for (let i = 0; i < buttons.length; i++) {
+        const body = document.getElementById("sheet-music");
+        body.removeChild(buttons[i])
+    }
+    buttons = []
+}
+
+let renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
+
+function renderScore() {
+    removeDeleteButtons()
+    svg.removeChild(svg.firstChild)
+    renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
+
+    // Size our SVG:
+    let currMaxHeight = 100;
+    renderer.resize(800, currMaxHeight);
+
+    // And get a drawing context:
+    const context = renderer.getContext();
+
+    let prevTimeSig = null;
+    let prevMeasure = null;
+    let currWidth = 0;
+    currMaxHeight = 100;
+    renderer.resize(800, currMaxHeight);
+
+    for (let i = 0; i < barTimeSigs.length; i++) {
+        console.log(currWidth)
+        if (prevMeasure == null) {
+            const stave = new VF.Stave(10, 0, 200);
+            createDeleteButton(i)
+            stave.addClef("treble").addTimeSignature(barTimeSigs[i]).setContext(context).draw()
+            prevMeasure = stave
+            prevTimeSig = barTimeSigs[i]
+            currWidth++
+        } else {
+            if (currWidth >= 4) {
+                currMaxHeight += prevMeasure.height
+                renderer.resize(800, currMaxHeight)
+                const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, 200)
+                createDeleteButton(i)
+                currWidth = 1
+
+                if (prevTimeSig !== barTimeSigs[i]) {
+                    stave.addTimeSignature(barTimeSigs[i])
+                    prevTimeSig = barTimeSigs[i]
+                }
+
+                stave.setContext(context).draw()
+                prevMeasure = stave
+            } else {
+                const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, 200)
+                createDeleteButton(i)
+                currWidth++
+
+                if (prevTimeSig !== barTimeSigs[i]) {
+                    stave.addTimeSignature(barTimeSigs[i])
+                    prevTimeSig = barTimeSigs[i]
+                }
+
+                stave.setContext(context).draw()
+                prevMeasure = stave
+            }
+        }
     }
 }
 
-function addStave(barData) {
-    const time_sig = barData.get('time_sig')
-    let res
+function removeStave(barNum) {
+    barTimeSigs.splice(barNum, 1)
+    renderScore()
+}
 
-    if (prevMeasure == null) {
-        const stave = new VF.Stave(10, 0, 200);
-        res = stave.addClef("treble").addTimeSignature(time_sig).setContext(context)
-        prevMeasure = stave
-        prevTimeSig = time_sig
-        currWidth++
-    } else {
-        if (currWidth >= 4) {
-            currMaxHeight += prevMeasure.height
-            renderer.resize(800, currMaxHeight)
-            const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, 200)
-            currWidth = 1
-
-            if (prevTimeSig !== time_sig) {
-                stave.addTimeSignature(time_sig)
-                prevTimeSig = time_sig
-            }
-
-            res = stave.setContext(context)
-            prevMeasure = stave
-        } else {
-            const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, 200)
-            currWidth++
-
-            if (prevTimeSig !== time_sig) {
-                stave.addTimeSignature(time_sig)
-                prevTimeSig = time_sig
-            }
-
-            res = stave.setContext(context)
-            prevMeasure = stave
-        }
-    }
-
-    staves.push(res)
+function addBar(barData) {
+    barTimeSigs.push(barData.get('time_sig'))
 }
 
 function handleSubmit(event) {
@@ -78,20 +107,18 @@ function handleSubmit(event) {
     let num_bars = data.get('num_bars')
 
     for (num_bars; num_bars > 0; num_bars--) {
-        addStave(data)
+        addBar(data)
         const time_sig = data.get('time_sig').split("/")
         let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
         bars.push(bar)
     }
 
-    renderScore(staves)
+    renderScore()
 
     // Get bars as JSON
     const json = {
         "bars": bars
     }
-
-    console.log(json)
 
     // Open POST request
     const request = new XMLHttpRequest();
