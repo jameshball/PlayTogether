@@ -8,7 +8,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
 natsort==7.1.1
-psycopg2==2.8.6
+psycopg2-binary==2.8.6
 pycodestyle==2.7.0
 pydub==0.25.1
 pynput==1.7.3
