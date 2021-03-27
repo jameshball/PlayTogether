@@ -26,7 +26,7 @@ function handleSubmit(event) {
     const data = new FormData(event.target);
 
     // Add new bars
-    let num_bars = data.get('num-bars')
+    let num_bars = data.get('num_bars')
 
     for (num_bars; num_bars > 0; num_bars--) {
         const time_sig = data.get('time_sig').split("/")
@@ -40,6 +40,8 @@ function handleSubmit(event) {
     const json = {
         "bars": bars
     }
+
+    console.log(json)
 
     // Open POST request
     const url = window.location.href
@@ -60,7 +62,7 @@ function handleSubmit(event) {
     }
 
     elem.innerText = "Please wait...";
-    request.send(json);
+    request.send(JSON.stringify(json));
 }
 
 const form = document.querySelector('form');

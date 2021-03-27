@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
@@ -19,19 +19,21 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/new_score')
-def new_score():
-    return render_template('new_score.html')
+@app.route('/edit_score/<int:score_id>')
+def edit_score(score_id):
+    return render_template('edit_score.html')
 
 
-@app.route('/api/new_score', methods=['POST'])
-def api_new_score():
-    return 'hello'
+@app.route('/api/edit_score/<int:score_id>', methods=['POST'])
+def api_edit_score(score_id):
+    content = request.json
+    bars = content['bars']
 
+    for bar in bars:
+        # TODO: Update score with id score_id on database (delete and add)
+        pass
 
-@app.route('/hello/<first_name>/<last_name>')
-def create(first_name=None, last_name=None):
-    return 'Hello ' + first_name + ',' + last_name
+    return ''
 
 
 @app.route('/audio/')
