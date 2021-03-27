@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 
 class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(80), nullable=True)
 
     tracks = db.relationship('Track', backref='score')
     bars = db.relationship('Bar', backref='score')

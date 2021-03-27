@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
@@ -19,12 +19,13 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/new_score', methods=['POST'])
-def api_new_score():
-    # TODO: Create new empty score entry in database and return its score_id
-    score_id = 0
+@app.route('/new_score', methods=['GET'])
+def new_score():
+    score = Score()
+    db.session.add(score)
+    db.session.commit()
 
-    return score_id
+    return redirect(f'/edit_score/{score.id}')
 
 
 @app.route('/edit_score/<int:score_id>')
