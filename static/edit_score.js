@@ -2,6 +2,11 @@ VF = Vex.Flow;
 
 // Create an SVG renderer and attach it to the DIV element named "boo".
 const svg = document.getElementById("score");
+svg.setAttribute('width', '100%');
+svg.setAttribute('height', '100%');
+svg.setAttribute('viewBox', '0 0 500 500'); // or whatever your defaults were
+svg.setAttribute('preserveAspectRatio', 'xMidYMid');
+
 const renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
 
 // Size our SVG:
@@ -12,17 +17,25 @@ renderer.resize(800, currMaxHeight);
 const context = renderer.getContext();
 
 const bars = [];
-
 let prevTimeSig = null;
 let prevMeasure = null;
 let currWidth = 0;
 
-function renderBar(barData) {
+const staves = []
+
+function renderScore(staves) {
+    for (let i = 0; i < staves.length; i++) {
+        staves[i].draw()
+    }
+}
+
+function addStave(barData) {
     const time_sig = barData.get('time_sig')
+    let res
 
     if (prevMeasure == null) {
         const stave = new VF.Stave(10, 0, 200);
-        stave.addClef("treble").addTimeSignature(time_sig).setContext(context).draw()
+        res = stave.addClef("treble").addTimeSignature(time_sig).setContext(context)
         prevMeasure = stave
         prevTimeSig = time_sig
         currWidth++
@@ -38,7 +51,7 @@ function renderBar(barData) {
                 prevTimeSig = time_sig
             }
 
-            stave.setContext(context).draw()
+            res = stave.setContext(context)
             prevMeasure = stave
         } else {
             const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, 200)
@@ -49,28 +62,29 @@ function renderBar(barData) {
                 prevTimeSig = time_sig
             }
 
-            stave.setContext(context).draw()
+            res = stave.setContext(context)
             prevMeasure = stave
         }
     }
 
-    console.log(currWidth)
+    staves.push(res)
 }
 
 function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
-    const new_bars = []
 
     // Add new bars
     let num_bars = data.get('num_bars')
 
     for (num_bars; num_bars > 0; num_bars--) {
-        renderBar(data)
+        addStave(data)
         const time_sig = data.get('time_sig').split("/")
         let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
         bars.push(bar)
     }
+
+    renderScore(staves)
 
     // Get bars as JSON
     const json = {
