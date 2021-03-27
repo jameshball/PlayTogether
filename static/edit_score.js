@@ -1,40 +1,76 @@
 VF = Vex.Flow;
 
 // Create an SVG renderer and attach it to the DIV element named "boo".
-const div = document.getElementById("score");
-const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+const svg = document.getElementById("score");
+const renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
 
 // Size our SVG:
-renderer.resize(500, 200);
+let currMaxHeight = 100;
+renderer.resize(800, currMaxHeight);
 
 // And get a drawing context:
 const context = renderer.getContext();
 
-// Create a stave at position 10, 40 of width 400 on the canvas.
-const stave = new VF.Stave(10, 40, 400);
-
-// Add a clef and time signature.
-//stave.addClef("treble").addTimeSignature("4/4");
-
-// Connect it to the rendering context and draw!
-stave.setContext(context).draw();
-
 const bars = [];
+
+let prevTimeSig = null;
+let prevMeasure = null;
+let currWidth = 0;
+
+function renderBar(barData) {
+    const time_sig = barData.get('time_sig')
+
+    if (prevMeasure == null) {
+        const stave = new VF.Stave(10, 0, 200);
+        stave.addClef("treble").addTimeSignature(time_sig).setContext(context).draw()
+        prevMeasure = stave
+        prevTimeSig = time_sig
+        currWidth++
+    } else {
+        if (currWidth >= 4) {
+            currMaxHeight += prevMeasure.height
+            renderer.resize(800, currMaxHeight)
+            const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, 200)
+            currWidth = 1
+
+            if (prevTimeSig !== time_sig) {
+                stave.addTimeSignature(time_sig)
+                prevTimeSig = time_sig
+            }
+
+            stave.setContext(context).draw()
+            prevMeasure = stave
+        } else {
+            const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, 200)
+            currWidth++
+
+            if (prevTimeSig !== time_sig) {
+                stave.addTimeSignature(time_sig)
+                prevTimeSig = time_sig
+            }
+
+            stave.setContext(context).draw()
+            prevMeasure = stave
+        }
+    }
+
+    console.log(currWidth)
+}
 
 function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
+    const new_bars = []
 
     // Add new bars
     let num_bars = data.get('num_bars')
 
     for (num_bars; num_bars > 0; num_bars--) {
+        renderBar(data)
         const time_sig = data.get('time_sig').split("/")
         let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
         bars.push(bar)
     }
-
-    // Re-render score
 
     // Get bars as JSON
     const json = {

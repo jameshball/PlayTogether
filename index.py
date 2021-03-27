@@ -3,7 +3,7 @@ from flask import Flask, render_template, send_file, request
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
-from model import *
+#from model import *
 
 app = Flask(__name__)
 
