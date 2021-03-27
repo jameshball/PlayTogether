@@ -31,40 +31,46 @@ function removeDeleteButtons() {
 
 let renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
 
+const barWidth = 200
+const maxBarsPerLine = 4
+const maxViewBoxWidth = maxBarsPerLine * barWidth + 20
+
 function renderScore() {
     removeDeleteButtons()
     svg.removeChild(svg.firstChild)
     renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
-
-    // Size our SVG:
-    let currMaxHeight = 100;
-    renderer.resize(800, currMaxHeight);
 
     // And get a drawing context:
     const context = renderer.getContext();
 
     let prevTimeSig = null;
     let prevMeasure = null;
-    let currWidth = 0;
-    currMaxHeight = 100;
-    renderer.resize(800, currMaxHeight);
+    let lastLineBarCount = 0;
+    let viewBoxWidth = 20;
+    let viewBoxHeight = 100;
 
     for (let i = 0; i < barTimeSigs.length; i++) {
-        console.log(currWidth)
+        console.log(lastLineBarCount)
         if (prevMeasure == null) {
-            const stave = new VF.Stave(10, 0, 200);
+            const stave = new VF.Stave(10, 0, barWidth);
+            // Size our SVG:
+            viewBoxWidth += barWidth
+            svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
+
             createDeleteButton(i)
             stave.addClef("treble").addTimeSignature(barTimeSigs[i]).setContext(context).draw()
             prevMeasure = stave
             prevTimeSig = barTimeSigs[i]
-            currWidth++
+            lastLineBarCount++
         } else {
-            if (currWidth >= 4) {
-                currMaxHeight += prevMeasure.height
-                renderer.resize(800, currMaxHeight)
-                const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, 200)
+            if (lastLineBarCount >= maxBarsPerLine) {
+                // if we need a new line
+                viewBoxHeight += prevMeasure.height
+                // we don't add onto viewBoxWidth because there's already a full line
+                svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
+                const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, barWidth)
                 createDeleteButton(i)
-                currWidth = 1
+                lastLineBarCount = 1
 
                 if (prevTimeSig !== barTimeSigs[i]) {
                     stave.addTimeSignature(barTimeSigs[i])
@@ -74,9 +80,12 @@ function renderScore() {
                 stave.setContext(context).draw()
                 prevMeasure = stave
             } else {
-                const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, 200)
+                // if we don't need a new line
+                viewBoxWidth = viewBoxWidth >= maxViewBoxWidth ? maxViewBoxWidth : viewBoxWidth + barWidth
+                svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
+                const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, barWidth)
                 createDeleteButton(i)
-                currWidth++
+                lastLineBarCount++
 
                 if (prevTimeSig !== barTimeSigs[i]) {
                     stave.addTimeSignature(barTimeSigs[i])
