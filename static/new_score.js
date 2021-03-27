@@ -29,20 +29,23 @@ function handleSubmit(event) {
     let num_bars = data.get('num-bars')
 
     for (num_bars; num_bars > 0; num_bars--) {
-        let bar = {"top_sig": data.get('time_sig'), "tempo": data.get('tempo')}
+        const time_sig = data.get('time_sig').split("/")
+        let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
         bars.push(bar)
     }
 
     // Re-render score
 
     // Get bars as JSON
-    const url = window.location.href
-    const score_id = url.substr(url.lastIndexOf('/') + 1);
-    const json = JSON.stringify(Object.fromEntries(data));
+    const json = {
+        "bars": bars
+    }
 
     // Open POST request
+    const url = window.location.href
+    const score_id = url.substr(url.lastIndexOf('/') + 1);
     const request = new XMLHttpRequest();
-    request.open("POST", "/api/new_score");
+    request.open("POST", "/api/edit_score/" + score_id);
     request.responseType = "json";
     request.setRequestHeader("Content-Type", "application/json");
 
