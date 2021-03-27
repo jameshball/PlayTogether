@@ -4,7 +4,6 @@ from flask import Flask, render_template, send_file, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
-
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -44,6 +43,24 @@ def api_edit_score(score_id):
     db.session.commit()
 
     return ''
+
+
+@app.route('/api/list_scores')
+def api_list_scores():
+    scores = Score.query.with_entities(Score.id, Score.name).all()
+    return json.dumps([{"score_id": score.id, "name": score.name} for score in scores])
+
+
+@app.route('/api/list_tracks/<int:score_id>')
+def api_list_tracks(score_id):
+    tracks = Track.query.filter(Track.score_id == score_id).all()
+    return json.dumps([{"track_id": track.id, "name": track.name} for track in tracks])
+
+
+@app.route('/api/get_score/<int:score_id>')
+def api_get_score(score_id):
+    score = Score.query.get_or_404(score_id)
+    return {"score_id": score.id, "name": score.name, "bars": json.loads(score.bars)}
 
 
 @app.route('/api/upload_track/<int:score_id>/<int:track_id>', methods=['POST'])
