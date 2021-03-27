@@ -44,8 +44,6 @@ function handleSubmit(event) {
     console.log(json)
 
     // Open POST request
-    const url = window.location.href
-    const score_id = url.substr(url.lastIndexOf('/') + 1);
     const request = new XMLHttpRequest();
     request.open("POST", "/api/edit_score/" + score_id);
     request.responseType = "json";
