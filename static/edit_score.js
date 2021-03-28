@@ -101,8 +101,19 @@ function removeStave(barNum) {
     renderScore()
 }
 
-function addBar(barData) {
-    barTimeSigs.push(barData.get('time_sig'))
+function loadBars(){
+    const request = new XMLHttpRequest();
+    request.open("GET", "/api/get_score/" + score_id);
+    request.responseType = "json";
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onload = function () {
+        if (request.status === 200) {
+            request.response["bars"].forEach(bar => barTimeSigs.push(bar["top_sig"] + "/" + bar["bottom_sig"]));
+            renderScore()
+        } else {
+        }
+    }
+    request.send()
 }
 
 function handleSubmit(event) {
@@ -113,7 +124,7 @@ function handleSubmit(event) {
     let num_bars = data.get('num_bars')
 
     for (num_bars; num_bars > 0; num_bars--) {
-        addBar(data)
+        barTimeSigs.push(data.get('time_sig'))
         const time_sig = data.get('time_sig').split("/")
         let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
         bars.push(bar)
@@ -225,4 +236,6 @@ barForm.addEventListener('submit', handleSubmit);
 
 const trackForm = document.getElementById('track_form');
 trackForm.addEventListener('submit', addTrack)
+
+loadBars()
 listTracks()
