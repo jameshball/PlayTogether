@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Flask, render_template, send_file, request, redirect
+from flask import Flask, render_template, send_file, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://", 1)
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, engine_options={"max_overflow" : -1})
 from model import *
 
 db.create_all()
@@ -53,10 +53,18 @@ def record_track(score_id):
     return render_template('record_track.html', score_id=score_id, bars=score.bars)
 
 
+@app.route('/api/get_sample/<int:sample_id>')
+def api_get_sample(sample_id):
+    sample = Sample.query.get_or_404(sample_id)
+    response = make_response(sample.file)
+    response.headers.set('Content-Type', 'audio/mpeg')
+    return response
+
+
 @app.route('/api/list_samples/<int:track_id>')
 def api_list_samples(track_id):
     samples = Sample.query.filter(Sample.track_id == track_id).all()
-    return json.dumps([{"score_id": sample.id, "created_at": sample.created_at} for sample in samples])
+    return json.dumps([{"sample_id": sample.id, "recording_number": idx + 1, "created_at": sample.created_at.strftime("%d/%m/%Y, %H:%M:%S")} for idx, sample in enumerate(samples)])
 
 
 @app.route('/api/list_scores')
@@ -95,7 +103,7 @@ def api_get_score(score_id):
 
 @app.route('/api/upload_track/<int:score_id>/<int:track_id>', methods=['POST'])
 def api_upload_track(score_id, track_id):
-    if request.content_type != "audio/mpeg-3":
+    if request.content_type != "audio/mpeg":
         return "bad mime type", 415
 
     track = Track.query.join(Score).filter(Score.id == score_id and Track.id == track_id).first_or_404()
@@ -104,11 +112,6 @@ def api_upload_track(score_id, track_id):
     db.session.commit()
 
     return ''
-    # hello = AudioSegment.from_mp3("audio/hello.mp3")
-    # world = AudioSegment.from_mp3("audio/world.mp3")
-    # output = hello.overlay(world)
-    # output.export("audio/merged.mp3", format="mp3")
-    # return send_file('audio/merged.mp3')
 
 
 if __name__ == '__main__':
