@@ -61,12 +61,16 @@ $(document).ready(function () {
             startRecording().then(playClick);
         } else {
             clearInterval(interval); // this stops the sound effects from playing
-            beat = 1; // reset the beat to the down beat
-            barIndex = 0;
-            isPlaying = false;
-            finishRecording();
+            endMetronome();
         }
     });
+
+    function endMetronome() {
+        beat = 1; // reset the beat to the down beat
+        barIndex = 0;
+        isPlaying = false;
+        finishRecording();
+    }
 
     // This function handles playing the click sound
     // Each time playClick() is called, the beat variable is incremented so we know what beat we're on
@@ -74,9 +78,7 @@ $(document).ready(function () {
         if ((beat % (beatsPerBar * clicksPerBeat)) === 1) {
             clearInterval(interval);
             if (barIndex >= bars.length) {
-                isPlaying = false;
-                barIndex = 0;
-                finishRecording();
+                endMetronome();
                 return;
             }
             tempo = bars[barIndex].tempo;

@@ -178,16 +178,17 @@ function sendRecording(blob) {
     request.send(blob);
 }
 
+let group
+
 function finishRecording() {
     rec.stop()
     for (let key in audio_elems) {
         audio_elems[key].pause();
         audio_elems[key].currentTime = 0;
     }
+    group.style.transition = 'transform 0.5s linear';
+    group.style.transform = 'translate(0, 0)';
 }
-
-let group
-const maxWidth = bars.length * 200
 
 function setupScore() {
     const div = document.getElementById('score')
