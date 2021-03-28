@@ -82,7 +82,7 @@ def api_upload_track(score_id, track_id):
     if request.content_type != "audio/mpeg-3":
         return "bad mime type", 415
 
-    track = Track.query.join(Score).filter(Score.id == score_id and Track.id == track_id).first_or_404()
+    track = Track.query.join(Score).filter(Score.id == score_id, Track.id == track_id).first_or_404()
     Sample(file=request.data, track=track)
 
     db.session.commit()
