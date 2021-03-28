@@ -14,3 +14,23 @@
 #score > svg {
   width: 100%;
 }
+
+#choose-sampling-track {
+  margin: 20px 0px;
+}
+
+#choose-backing-track {
+  margin: 40px;
+}
+
+#track_name {
+  margin: 5px 0px;
+}
+
+#sample_dropdown {
+  margin: 2px 5px;
+}
+
+#checkbox {
+  margin: 0px 5px;
+}
