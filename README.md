@@ -2,7 +2,7 @@
 
 PlayTogether allows members to use other members' recordings as their backing tracks, leading to more cohesive playing. As more members submit their recordings, the backing track becomes more complete, making it easier to play in time and with more energy than when recording to a metronome.
 
-PlayTogether is our submission for IC Hello World 2021.
+PlayTogether won 'Most innovative use of the Web' after its initial development during IC Hello World Hack 21.
 
 ## How to Run 
 
