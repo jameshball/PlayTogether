@@ -55,7 +55,7 @@
                 <label for="new-track">Enter New Track Name</label>
             </div>
             <button class="btn btn-outline-success mb-3">Submit</button>
-            <button class="btn btn-primary mb-3">Record tracks</button>
+            <a class="btn btn-primary mb-3" href="{{ url_for('record_track') }}?id={{ score_id }}" role="button">Record tracks</a>
         </form>
 
         <div id="existing-tracks" style="margin-bottom: 30px">
