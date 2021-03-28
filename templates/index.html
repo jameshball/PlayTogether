@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hello World</title>
-  <link rel="stylesheet" href="style.css">
 </head>
-<body class="full-screen flex-center">
-  <h1 class="text-xl">Hello World</h1>
+<body>
+  <div class="container-fluid">
+    <div class="col-md-4 offset-md-4">
+      <h1>Welcome to PlayTogether</h1>
+      <h2>Would you like to</h2>
+      <div class="row">
+        <div class="col align-self-center">
+          <a href="{{ url_for('new_score') }}" class="btn btn-outline-success btn-lg" tabindex="-1" role="button">
+            Create new score
+          </a>
+        </div>
+        <div class="col">
+          <legend> Record your part </legend>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" id="floatingInput" placeholder="0">
+            <label for="floatingInput">Enter ID</label>
+          </div>
+          <button type="submit" class="btn btn-outline-primary btn-lg">
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </body>
+
 </html>

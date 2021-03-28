@@ -9,9 +9,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 if 'DATABASE_URL' in os.environ:
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://", 1)
 db = SQLAlchemy(app)
 from model import *
+
+db.create_all()
 
 
 @app.route('/')
@@ -43,6 +45,18 @@ def api_edit_score(score_id):
     db.session.commit()
 
     return ''
+
+
+@app.route('/record_track/<int:score_id>')
+def record_track(score_id):
+    score = Score.query.get_or_404(score_id)
+    return render_template('record_track.html', score_id=score_id, bars=score.bars)
+
+
+@app.route('/api/list_samples/<int:track_id>')
+def api_list_samples(track_id):
+    samples = Sample.query.filter(Sample.track_id == track_id).all()
+    return json.dumps([{"score_id": sample.id, "created_at": sample.created_at} for sample in samples])
 
 
 @app.route('/api/list_scores')
@@ -81,7 +95,7 @@ def api_get_score(score_id):
 
 @app.route('/api/upload_track/<int:score_id>/<int:track_id>', methods=['POST'])
 def api_upload_track(score_id, track_id):
-    if request.content_type != "audio/mpeg":
+    if request.content_type != "audio/mpeg-3":
         return "bad mime type", 415
 
     track = Track.query.join(Score).filter(Score.id == score_id and Track.id == track_id).first_or_404()
