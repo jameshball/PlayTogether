@@ -145,7 +145,6 @@ function startRecording() {
         }
 
         rec.start(2000);
-        group.classList.add('scrolling');
     };
 
     return navigator.mediaDevices.getUserMedia({audio: true, video: false})
@@ -188,16 +187,15 @@ function finishRecording() {
 }
 
 let group
+const maxWidth = bars.length * 200
 
 function setupScore() {
     const div = document.getElementById('score')
     const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG)
     const context = renderer.getContext()
 
-    const tickContext = new VF.TickContext()
-    tickContext.preFormat().setX(400)
+    group = context.openGroup();
 
-    group = context.openGroup()
     let prevTimeSig = null
 
     for (let i = 0; i < bars.length; i++) {
@@ -219,7 +217,6 @@ function setupScore() {
 
     context.closeGroup(); // and close the group
 
-    group.classList.add('scroll');
     const box = group.getBoundingClientRect();
 }
 

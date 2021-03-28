@@ -84,6 +84,9 @@ $(document).ready(function () {
             beatsPerBar = bars[barIndex].top_sig;
             document.getElementById('top_sig').innerText = beatsPerBar;
             document.getElementById('bottom_sig').innerText = bars[barIndex].bottom_sig;
+            const secs = beatsPerBar / (tempo/60.0)
+            group.style.transition = 'transform ' + secs + 's linear';
+            group.style.transform = 'translate(-' + (200 * (barIndex + 1)) + 'px, 0)';
             beat = 1;
             interval = setInterval(playClick, (60000 / tempo) / clicksPerBeat);
             // We're on the down beat of the bar
