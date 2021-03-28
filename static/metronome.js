@@ -54,19 +54,21 @@ $(document).ready(function () {
 
     // Function to handle starting and stopping the metronome
     record.click(function () {
-        prepareBackingTracks();
-        tempo = bars[0].tempo
-        beatsPerBar = bars[0].top_sig
-        if (!isPlaying) {
-            isPlaying = true;
-            playClick();
-            startRecording();
-        } else {
-            clearInterval(interval); // this stops the sound effects from playing
-            beat = 1; // reset the beat to the down beat
-            barIndex = 0;
-            isPlaying = false;
-        }
+        prepareBackingTracks().then(() => {
+                tempo = bars[0].tempo
+                beatsPerBar = bars[0].top_sig
+                if (!isPlaying) {
+                    isPlaying = true;
+                    startRecording();
+                    playClick();
+                } else {
+                    clearInterval(interval); // this stops the sound effects from playing
+                    beat = 1; // reset the beat to the down beat
+                    barIndex = 0;
+                    isPlaying = false;
+                }
+            }
+        )
     });
 
     // This function handles playing the click sound

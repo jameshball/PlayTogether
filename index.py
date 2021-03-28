@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://", 1)
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, engine_options={"max_overflow" : -1})
 from model import *
 
 db.create_all()
