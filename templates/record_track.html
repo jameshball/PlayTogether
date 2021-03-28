@@ -15,6 +15,15 @@
 <div>
     <div class="container-fluid" style="text-align: center">
         <div class="col-8 offset-2">
+            <div class="row" style="margin-bottom: 40px">
+                <div class="col-6">
+                    <button id="homepage" class="btn">Homepage</button>
+                </div>
+                <div class="col-6">
+                    <button id="new_score" class="btn">Create New Score</button>
+                </div>
+            </div>
+
             <div id="choose-sampling-track">
                 <h3> Choose Sampling Track </h3>
                 <select id="sampling-track-dropdown" name="sampling-tracks"></select>
@@ -42,7 +51,8 @@
                 </div>
             </div>
 
-            <button id="record" class="btn btn-primary">Record!</button>
+            <button id="record" class="btn btn-primary">Record</button>
+            <button id="merge" class="btn btn-primary" onclick=mergeRecordings()>Merge</button>
             <p id="errors"></p>
         </div>
     </div>

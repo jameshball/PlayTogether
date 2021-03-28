@@ -81,7 +81,7 @@ function getSamplingTracks() {
 
                 sample_dropdown.add(defaultOption)
                 sample_dropdown.selectedIndex = 0
-                sample_dropdown.id = "sample_dropdown"
+                sample_dropdown.id = "sample_dropdown_" + track_data[i].track_id
                 sample_dropdown.onchange = updateAudioElements
 
                 const samples_url = '/api/list_samples/' + track_data[i].track_id
@@ -227,6 +227,47 @@ function setupScore() {
     const box = group.getBoundingClientRect();
 }
 
+function mergeRecordings() {
+    const sample_ids = []
+
+    for (let key in audio_elems) {
+        if (document.getElementById(key).parentElement.lastChild.checked) {
+            sample_ids.push(document.getElementById(key).value)
+        }
+    }
+
+    // Open POST request
+    const request = new XMLHttpRequest();
+    request.open("POST", "/api/merge_tracks/" + score_id);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.responseType = 'blob'
+
+    // Display result or error message to user
+    request.onload = function () {
+        if (request.status === 200) {
+            const blob = new Blob(request.response, {type: 'audio/mpeg'})
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // the filename you want
+            a.download = 'merge.mp3';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            alert('your file has downloaded!');
+        } else {
+            elem.innerText = request.response.errors[0].defaultMessage;
+        }
+    }
+
+    request.send(JSON.stringify(sample_ids))
+}
+
 getSamplingTracks();
 setupScore()
+
+
+
 
