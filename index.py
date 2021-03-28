@@ -79,6 +79,22 @@ def api_list_tracks(score_id):
     return json.dumps([{"track_id": track.id, "name": track.name} for track in tracks])
 
 
+@app.route('/api/delete_track/<int:score_id>/<int:track_id>', methods=['DELETE'])
+def api_delete_track(score_id, track_id):
+    track = Track.query.filter(Track.id == track_id and Track.score_id == score_id).first_or_404()
+    db.session.delete(track)
+    db.session.commit()
+    return ''
+
+
+@app.route('/api/add_track/<int:score_id>', methods=['POST'])
+def api_add_track(score_id):
+    track = Track(name=request.json["name"], score_id=score_id)
+    db.session.add(track)
+    db.session.commit()
+    return ''
+
+
 @app.route('/api/get_score/<int:score_id>')
 def api_get_score(score_id):
     score = Score.query.get_or_404(score_id)
