@@ -2,42 +2,60 @@
 <html lang="en">
 
 <head>
-  <link href="../static/bootstrap.min.css" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hello World</title>
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/index.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="col-md-4 offset-md-4">
-      <h1>Welcome to PlayTogether</h1>
-      <h2>Would you like to</h2>
-      <div class="row">
-        <div class="col align-self-center">
-          <a href="{{ url_for('new_score') }}" class="btn btn-outline-success btn-lg" tabindex="-1" role="button">
-            Create new score
-          </a>
+<div style="height: 100%" class="container-fluid">
+    <div class="col-md-6 offset-md-3">
+        <div class="page-header">
+            <h1>PlayTogether</h1>
         </div>
-        <div class="col">
-          <legend> Record your part </legend>
-          <div class="form-floating mb-3">
-            <input type="number" class="form-control" id="scoreIdInput" placeholder="0">
-            <label for="scoreIdInput">Enter ID</label>
-          </div>
-          <button onclick="handlePlay()" class="btn btn-outline-primary btn-lg">
-            Play!
-          </button>
+        <h2>Would you like to:</h2>
+        <div class="row">
+            <div class="col-sm-6 align-self-center">
+                <a href="{{ url_for('new_score') }}">
+                    <button class="btn btn-outline-success btn-lg" style="border-color: dimgray; width: 100%"
+                            tabindex="-1" role="button">
+                        Create new score
+                    </button>
+                </a>
+            </div>
+            <div class="col-sm-6 align-self-center">
+                <img src="../static/play-together-1.jpg" class="img-fluid" alt="Responsive image">
+            </div>
         </div>
-      </div>
+        <div class="row" style="margin-top: 30px">
+            <div id="swap-small" class="col-sm-6 align-self-center col-md-push-9">
+                <img src="../static/play-together-2.jpg" class="img-fluid" alt="Responsive image">
+            </div>
+            <div class="col-sm-6">
+                <legend> Record your part</legend>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="scoreIdInput" placeholder="0">
+                    <label for="scoreIdInput">Enter score ID</label>
+                </div>
+                <button onclick="handlePlay()" class="btn btn-outline-primary btn-lg">
+                    Play!
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
-  <a href='https://www.freepik.com/vectors/music'>Music vector created by pch.vector - www.freepik.com</a>
-  <script>
-      function handlePlay() {
-          window.location.href += 'record_track/' + document.getElementById('scoreIdInput').value
-      }
-  </script>
-  <script src="../static/bootstrap.bundle.min.js"></script>
+</div>
+<footer class="footer">
+    <div class="container">
+        <a href='https://www.freepik.com/vectors/music'><span class="text-muted"> Music vector created by pch.vector - www.freepik.com </span></a>
+    </div>
+</footer>
+<script>
+    function handlePlay() {
+        window.location.href += 'record_track/' + document.getElementById('scoreIdInput').value
+    }
+</script>
+<script src="../static/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
