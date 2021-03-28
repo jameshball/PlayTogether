@@ -12,7 +12,7 @@
     <div class="col-8 offset-2">
         <div class="row">
             <div class="title">
-                <h2>Add a New Score</h2>
+                <h2>Edit score</h2>
             </div>
         </div>
 
@@ -50,18 +50,12 @@
         </div>
 
         <form id="track_form">
-            <div class="row track" id="track_new" style="margin-bottom: 20px;">
-                <div class="col-3 my-auto">
-                    <div class="form-floating mb-3" id="track_new" style="margin-bottom: 0 !important;">
-                        <input type="text" class="form-control" name="name" id="new-track">
-                        <label for="new-track">Enter New Track Name</label>
-                    </div>
-                </div>
-
-                <div class="col-3 offset-6 my-auto">
-                    <button class="btn btn-primary">Submit</button>
-                </div>
+            <div class="form-floating mb-3" id="track_new">
+                <input type="text" class="form-control" name="name" id="new-track">
+                <label for="new-track">Enter New Track Name</label>
             </div>
+            <button class="btn btn-outline-success mb-3">Submit</button>
+            <button class="btn btn-primary mb-3">Record tracks</button>
         </form>
 
         <div id="existing-tracks" style="margin-bottom: 30px">
