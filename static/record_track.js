@@ -70,7 +70,7 @@ function getSamplingTracks() {
                 checkbox.type = "checkbox"
                 checkbox.text = track_data[i].name
                 checkbox.value = track_data[i].track_id
-                checkbox.id = "checkbox_" + track_data[i].track_id
+                checkbox.id = "checkbox"
 
                 let sample_dropdown = document.createElement('select')
                 sample_dropdown.length = 0
@@ -81,7 +81,7 @@ function getSamplingTracks() {
 
                 sample_dropdown.add(defaultOption)
                 sample_dropdown.selectedIndex = 0
-                sample_dropdown.id = "sample_dropdown_" + track_data[i].track_id
+                sample_dropdown.id = "sample_dropdown"
                 sample_dropdown.onchange = updateAudioElements
 
                 const samples_url = '/api/list_samples/' + track_data[i].track_id
@@ -107,7 +107,11 @@ function getSamplingTracks() {
 
                 request.send()
 
-                box.appendChild(document.createTextNode(track_data[i].name))
+                let track_name = document.createElement('div')
+                track_name.setAttribute('id', 'track_name')
+                track_name.innerHTML = '<h6>' + track_data[i].name + '</h6>'
+
+                box.appendChild(track_name)
                 box.appendChild(sample_dropdown)
                 box.appendChild(checkbox)
                 backing_tracks.appendChild(box)
