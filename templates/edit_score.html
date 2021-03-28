@@ -1,31 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>New Score</title>
-  <link rel="stylesheet" href="../static/edit_score.css">
-  <script src="../static/vexflow-debug.js"></script>
+  <link href="../static/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
 </head>
-<body class="full-screen flex-center">
-  <h1 class="text-xl">Add a new score</h1>
-  <div id="sheet-music">
-      <div id="score"></div>
-  </div>
-  <form id="form">
-      Time Signature: <input type="text" name="time_sig"><br>
-      Tempo: <input type="text" name="tempo"><br>
-      Number of Bars: <input type="text" name="num_bars"><br><br>
+<body>
+<div class="container-fluid">
+  <div class="col-8 offset-2">
 
-      <div id = 'submit'>
-        <button>Submit</button>
+    <div class="row">
+      <h1 class="text-xl">Add a new score</h1>
+    </div>
+
+    <div class="row">
+      <div id="sheet_music">
       </div>
-  </form>
+    </div>
+    <form id="bar_form">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" name="time_sig" id="time_sig">
+        <label for="time_sig">Time Signature</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" name="tempo" id="tempo">
+        <label for="tempo">Tempo</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" name="num_bars" id="num_bars">
+        <label for="num_bars">Number of Bars</label>
+      </div>
 
-  <p id="errors"></p>
-  <script>
-      const score_id = {{score_id}}
-  </script>
-  <script src="../static/edit_score.js"></script>
+      <button class="btn btn-outline-success btn-lg">Submit</button>
+    </form>
+
+    <p id="errors"></p>
+  </div>
+</div>
+
+<div class="tracks container-fluid">
+  <div class="col-8 offset-2">
+    <div class="row">
+      <h2 class="text-xl">Tracks</h2>
+    </div>
+    <form id="track_form">
+      <div class="row track" id="track_new">
+        <div class="col-3">
+          <input placeholder="New track name" type="text" name="name">
+        </div>
+        <div class="col-3 offset-6">
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+    <div id="existing-tracks">
+    </div>
+  </div>
+</div>
 </body>
+
+<footer>
+  <script>
+      const score_id =
+      {{score_id}}
+  </script>
+  <script src="../static/bootstrap.bundle.min.js"></script>
+  <script src="../static/vexflow-debug.js"></script>
+  <script src="../static/edit_score.js"></script>
+</footer>
 </html>
