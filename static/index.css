@@ -1,0 +1,65 @@
+.page-header {
+    background-color: #840B2E;
+    padding: 10px;
+    margin-bottom: 20px;
+    color: white;
+    border-radius: 0px 0px 5px 5px;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: whitesmoke;
+    text-align: center;
+    font-size: 12px;
+}
+
+.btn {
+    color: dimgrey;
+    border-color: dimgrey !important;
+}
+
+.btn:hover {
+    background-color: dimgrey !important;
+    color: white;
+}
+
+/* unvisited link */
+a:link {
+    color: dimgrey;
+}
+
+/* visited link */
+a:visited {
+    color: dimgrey;
+}
+
+/* mouse over link */
+a:hover {
+    color: dimgrey;
+}
+
+/* selected link */
+a:active {
+    color: dimgrey;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+    #swap-small {
+        order: 2;
+    }
+
+    button {
+        margin: 20px 0;
+    }
+
+    .footer {
+        font-size: 8px;
+    }
+}
