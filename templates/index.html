@@ -21,7 +21,7 @@
           <div class="col align-self-center">
             <legend> Create new score </legend>
             <a href="{{ url_for('new_score') }}" class="btn btn-success btn-lg" tabindex="-1" role="button">
-              Go
+              Begin
             </a>
           </div>
           <div class="col align-self-center">
@@ -30,13 +30,10 @@
           <div class="col">
             <form action="record_track" method="get">
               <legend> Record your part </legend>
-              <div class="form-floating mb-3 text-dark">
-                <input type="number" class="form-control" id="floatingInput" name="id" placeholder="0">
-                <label for="floatingInput">Enter ID</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Enter ID" aria-describedby="button-addon">
+                <button class="btn-lg btn-primary" type="button" id="button-addon">Play</button>
               </div>
-              <button type="submit" class="btn btn-primary btn-lg">
-                Submit
-              </button>
             </form>
           </div>
         </div>
