@@ -1,5 +1,8 @@
 import json
 import os
+from functools import reduce
+from tempfile import NamedTemporaryFile
+
 from flask import Flask, render_template, send_file, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
@@ -10,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'].replace("postgres://", "postgresql://", 1)
-db = SQLAlchemy(app, engine_options={"max_overflow" : -1})
+db = SQLAlchemy(app, engine_options={"max_overflow": -1})
 from model import *
 
 db.create_all()
@@ -64,7 +67,9 @@ def api_get_sample(sample_id):
 @app.route('/api/list_samples/<int:track_id>')
 def api_list_samples(track_id):
     samples = Sample.query.filter(Sample.track_id == track_id).all()
-    return json.dumps([{"sample_id": sample.id, "recording_number": idx + 1, "created_at": sample.created_at.strftime("%d/%m/%Y, %H:%M:%S")} for idx, sample in enumerate(samples)])
+    return json.dumps([{"sample_id": sample.id, "recording_number": idx + 1,
+                        "created_at": sample.created_at.strftime("%d/%m/%Y, %H:%M:%S")} for idx, sample in
+                       enumerate(samples)])
 
 
 @app.route('/api/list_scores')
@@ -112,6 +117,28 @@ def api_upload_track(score_id, track_id):
     db.session.commit()
 
     return ''
+
+
+@app.route('/api/merge_tracks/<int:score_id>', methods=['POST'])
+def api_merge_tracks(score_id):
+    req = request.get_json(force=True)
+
+    segments = []
+    for d in req:
+        sample = Sample.query.join(Track).filter(Track.id == d["track_id"], Sample.id == d["sample_id"]).first_or_404()
+        # temp = NamedTemporaryFile('w+b', suffix=".mp3")
+        temp = NamedTemporaryFile(suffix=".mp3", delete=False)
+        temp.write(sample.file)
+        segments.append(AudioSegment.from_file(temp.name))
+        temp.close()
+        os.unlink(temp.name)
+
+    overlaid = reduce(lambda a, b: a.overlay(b), segments)
+
+    merged = NamedTemporaryFile(suffix=".mp3", delete=False)
+    # TODO: might leak file handles
+    overlaid.export(merged.name, format="mp3")
+    return send_file(merged.name)
 
 
 if __name__ == '__main__':
