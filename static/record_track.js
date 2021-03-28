@@ -34,49 +34,48 @@ request.send()
 
 let shouldStop = false;
 let stopped = false;
-let mediaRecorder = null
+let rec = null
 
 function startRecording() {
     const handleSuccess = function (stream) {
         const options = {mimeType: 'audio/webm'};
         const recordedChunks = [];
-        mediaRecorder = new MediaRecorder(stream, options);
+        rec = new MediaRecorder(stream, options);
 
-        mediaRecorder.addEventListener('dataavailable', function (e) {
+        rec.addEventListener('dataavailable', function (e) {
             console.log("available");
             if (e.data.size > 0) {
                 recordedChunks.push(e.data);
             }
+            if (rec.state === "inactive") {
+                let blob = new Blob(recordedChunks, {type: 'audio/mpeg-3'});
+                rec.src = URL.createObjectURL(blob);
+                sendRecording(blob);
+            }
         });
 
-        mediaRecorder.addEventListener('stop', function () {
-            console.log("stop");
-            downloadLink.href = URL.createObjectURL(new Blob(recordedChunks));
-            downloadLink.download = 'acetest.wav';
-        });
-
-        mediaRecorder.start(2000);
+        rec.start(2000);
     };
 
     navigator.mediaDevices.getUserMedia({audio: true, video: false})
         .then(handleSuccess);
 }
 
-function finishRecording() {
-    mediaRecorder.stop()
-}
-
-function handleSubmit(event) {
-
+function sendRecording(blob) {
+    let elem = document.getElementById("errors");
+    const track_id = document.getElementById('sampling-track-dropdown').value;
+    if (track_id === 0) {
+        elem.innerText = 'Please select a sampling track'
+        return;
+    }
 
     // Open POST request
     const request = new XMLHttpRequest();
     request.open("POST", "/api/upload_track/" + score_id + "/" + track_id);
     request.responseType = "json";
-    request.setRequestHeader("Content-Type", "audio/mpeg");
+    request.setRequestHeader("Content-Type", "audio/mpeg-3");
 
     // Display result or error message to user
-    let elem = document.getElementById("errors");
     request.onload = function () {
         if (request.status === 200) {
             elem.innerText = request.response;
@@ -86,9 +85,10 @@ function handleSubmit(event) {
     }
 
     elem.innerText = "Please wait...";
-    request.send(JSON.stringify(json));
+    request.send(blob);
 }
 
-const form = document.querySelector('form');
-form.addEventListener('submit', handleSubmit);
+function finishRecording() {
+    rec.stop()
+}
 

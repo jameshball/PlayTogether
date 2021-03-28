@@ -22,12 +22,8 @@
 // SOFTWARE.
 
 $(document).ready(function () {
-    const tempoMin = 1;
-    const tempoMax = 400;
     const bpbMin = 1;
     const bpbMax = 16;
-    const cpbMin = bpbMin;
-    const cpbMax = bpbMax;
     let beat = 1; // the current beat in the bar
     let beatsPerBar = bars[0].top_sig;
     let clicksPerBeat = 1;
