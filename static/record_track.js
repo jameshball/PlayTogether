@@ -245,7 +245,7 @@ function mergeRecordings() {
     // Display result or error message to user
     request.onload = function () {
         if (request.status === 200) {
-            const blob = new Blob(request.response, {type: 'audio/mpeg'})
+            const blob = new Blob([request.response], {type: 'audio/mpeg'})
 
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -256,7 +256,6 @@ function mergeRecordings() {
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
-            alert('your file has downloaded!');
         } else {
             elem.innerText = request.response.errors[0].defaultMessage;
         }
