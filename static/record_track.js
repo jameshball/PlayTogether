@@ -55,12 +55,12 @@ function getSamplingTracks() {
 
                     request.onload = function () {
                         if (request.status === 200) {
-                            samples = request.response
+                            let samples = request.response
 
                             for (let i = 0; i < samples.length; i++) {
-                                option = document.createElement('option')
-                                option.text = samples[i].track_id
-                                option.value = track_data[i].date
+                                let option = document.createElement('option')
+                                option.text = 'Recording ' + samples[i].recording_number + ': ' + samples[i].created_at
+                                option.value = samples[i].sample_id
                                 sample_dropdown.add(option)
                             }
                         } else {
@@ -84,6 +84,30 @@ function getSamplingTracks() {
     request.send()
 }
 
+function prepareBackingTracks() {
+    const samples_url = '/api/list_samples/' + track_data[i].track_id
+    const request = new XMLHttpRequest()
+    request.responseType = "json";
+    request.open('GET', samples_url, true)
+
+    request.onload = function () {
+        if (request.status === 200) {
+            let samples = request.response
+
+            for (let i = 0; i < samples.length; i++) {
+                let option = document.createElement('option')
+                option.text = 'Recording ' + samples[i].recording_number + ': ' + samples[i].created_at
+                option.value = samples[i].sample_id
+                sample_dropdown.add(option)
+            }
+        } else {
+            console.error('An error occurred fetching the sample options')
+        }
+    }
+
+    request.send()
+}
+
 let shouldStop = false;
 let stopped = false;
 let rec = null
@@ -100,7 +124,7 @@ function startRecording() {
                 recordedChunks.push(e.data);
             }
             if (rec.state === "inactive") {
-                let blob = new Blob(recordedChunks, {type: 'audio/mpeg-3'});
+                let blob = new Blob(recordedChunks, {type: 'audio/mpeg'});
                 rec.src = URL.createObjectURL(blob);
                 sendRecording(blob);
             }
@@ -125,7 +149,7 @@ function sendRecording(blob) {
     const request = new XMLHttpRequest();
     request.open("POST", "/api/upload_track/" + score_id + "/" + track_id);
     request.responseType = "json";
-    request.setRequestHeader("Content-Type", "audio/mpeg-3");
+    request.setRequestHeader("Content-Type", "audio/mpeg");
 
     // Display result or error message to user
     request.onload = function () {

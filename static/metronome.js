@@ -54,6 +54,7 @@ $(document).ready(function () {
 
     // Function to handle starting and stopping the metronome
     record.click(function () {
+        prepareBackingTracks();
         tempo = bars[0].tempo
         beatsPerBar = bars[0].top_sig
         if (!isPlaying) {
