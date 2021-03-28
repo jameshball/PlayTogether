@@ -28,14 +28,16 @@
             <h2>or</h2>
           </div>
           <div class="col">
-            <legend> Record your part </legend>
-            <div class="form-floating mb-3 text-dark">
-              <input type="number" class="form-control" id="floatingInput" placeholder="0">
-              <label for="floatingInput">Enter ID</label>
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg">
-              Submit
-            </button>
+            <form action="record_track" method="get">
+              <legend> Record your part </legend>
+              <div class="form-floating mb-3 text-dark">
+                <input type="number" class="form-control" id="floatingInput" name="id" placeholder="0">
+                <label for="floatingInput">Enter ID</label>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg">
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>

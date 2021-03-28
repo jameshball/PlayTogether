@@ -47,8 +47,9 @@ def api_edit_score(score_id):
     return ''
 
 
-@app.route('/record_track/<int:score_id>')
-def record_track(score_id):
+@app.route('/record_track')
+def record_track():
+    score_id = request.args.get('id', default=0, type=int)
     score = Score.query.get_or_404(score_id)
     return render_template('record_track.html', score_id=score_id, bars=score.bars)
 
