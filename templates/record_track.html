@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Track</title>
-    <link rel="stylesheet" href="../../static/record_track.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
-    <script src="../static/vexflow-debug.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../static/bootstrap.min.css" rel="stylesheet">
+  <title>Record Track</title>
+  <link rel="stylesheet" href="../../static/record_track.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.4/howler.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
+  <script src="../static/vexflow-debug.js"></script>
 </head>
 <body>
 <div>
-    <div id="choose-sampling-track">
+  <div class="container-fluid">
+    <div class="col-8 offset-2">
+      <div id="choose-sampling-track">
         <h3> Choose Sampling Track </h3>
         <select id="sampling-track-dropdown" name="sampling-tracks"></select>
-    </div>
+      </div>
 
-    <div id="choose-backing-track">
+      <div id="choose-backing-track">
         <h3> Choose Backing Track </h3>
         <form id="backing-track-options" name="backing-tracks"></form>
-    </div>
+      </div>
 
-    <div id="score-container">
+      <div id="score-container">
         <div id="score"></div>
-    </div>
+      </div>
 
-    <div>
-        <p>Tempo</p>
-        <p id="tempo"></p>
+      <div>
+        <h4>Tempo</h4>
+        <h5 id="tempo"></h5>
+      </div>
+      <div>
+        <h4>Time Signature</h4>
+        <h5 id="top_sig"></h5>
+        <h5 id="bottom_sig"></h5>
+      </div>
+      <button id="record" class="btn btn-primary">record</button>
+      <p id="errors"></p>
     </div>
-    <div>
-        <p>Time Signature</p>
-        <p id="top_sig"></p>
-        <p id="bottom_sig"></p>
-    </div>
-    <button id="record">record</button>
-    <p id="errors"></p>
+  </div>
 </div>
 <script>
     const score_id =
@@ -46,5 +51,6 @@
 </script>
 <script src="../../static/record_track.js"></script>
 <script src="../../static/metronome.js"></script>
+<script src="../static/bootstrap.bundle.min.js"></script>
 </body>
 </html>
