@@ -8,24 +8,24 @@
   <title>Hello World</title>
 </head>
 
-<body class="d-flex h-100 text-center text-white bg-dark">
-  <div class="container-fluid d-flex w-100 h-100 p-2 mx-auto flex-column">
+<body class="d-flex h-100 text-center">
+  <div class="container-fluid d-flex w-100 h-100 mx-auto flex-column" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ url_for('static', filename='background.jpg') }}') no-repeat center center fixed; background-size: cover; overflow: hidden; color: white">
     <header class="mb-auto">
       <div> </div>
     </header>
     <main>
-      <div class="col-6 offset-3">
+      <div class="col-6 offset-3 text-white">
         <h1>Welcome to PlayTogether</h1>
         <h3>Would you like to...</h3>
         <div class="row pt-5">
           <div class="col align-self-center">
             <legend> Create new score </legend>
-            <a href="{{ url_for('new_score') }}" class="btn btn-outline-success btn-lg" tabindex="-1" role="button">
+            <a href="{{ url_for('new_score') }}" class="btn btn-success btn-lg" tabindex="-1" role="button">
               Go
             </a>
           </div>
           <div class="col align-self-center">
-            <h2 class="text-secondary">or</h2>
+            <h2>or</h2>
           </div>
           <div class="col">
             <legend> Record your part </legend>
@@ -33,7 +33,7 @@
               <input type="number" class="form-control" id="floatingInput" placeholder="0">
               <label for="floatingInput">Enter ID</label>
             </div>
-            <button type="submit" class="btn btn-outline-primary btn-lg">
+            <button type="submit" class="btn btn-primary btn-lg">
               Submit
             </button>
           </div>
