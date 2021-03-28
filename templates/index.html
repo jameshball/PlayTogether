@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 
 <head>
     <link href="../static/bootstrap.min.css" rel="stylesheet">
@@ -8,54 +8,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello World</title>
 </head>
-<body>
-<div style="height: 100%" class="container-fluid">
-    <div class="col-md-6 offset-md-3">
-        <div class="page-header">
-            <h1>PlayTogether</h1>
+<body class="d-flex h-100 text-center">
+  <div class="container-fluid d-flex w-100 h-100 mx-auto flex-column" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ url_for('static', filename='background.jpg') }}') no-repeat center center fixed; background-size: cover; overflow: hidden; color: white">
+    <header class="mb-auto">
+      <div> </div>
+    </header>
+    <main>
+      <div class="col-6 offset-3 text-white p-5" style="background: rgba(0,0,0,0.6); border-radius: 30px">
+        <h1>Welcome to PlayTogether</h1>
+        <h3>Would you like to...</h3>
+        <div class="row pt-5">
+          <div class="col align-self-center">
+            <legend> Create new score </legend>
+            <a href="{{ url_for('new_score') }}" class="btn btn-success btn-lg text-white" tabindex="-1" role="button">
+              Begin
+            </a>
+          </div>
+          <div class="col align-self-center">
+            <h2>or</h2>
+          </div>
+          <div class="col">
+            <form action="record_track" method="get">
+              <legend> Record your part </legend>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Enter ID" name="id" aria-describedby="button-addon">
+                <button type="submit" class="btn btn-lg btn-primary text-white" type="button" id="button-addon">Play</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <h2>Would You Like To:</h2>
-        <div class="row">
-            <div class="col-sm-6 align-self-center">
-                <a href="{{ url_for('new_score') }}">
-                    <button class="btn btn-outline-success btn-lg" style="border-color: dimgray; width: 100%"
-                            tabindex="-1" role="button">
-                        Create New Score
-                    </button>
-                </a>
-            </div>
-            <div class="col-sm-6 align-self-center">
-                <img src="../static/play-together-1.jpg" class="img-fluid" alt="Responsive image">
-            </div>
-        </div>
-        <div class="row" style="margin-top: 30px">
-            <div id="swap-small" class="col-sm-6 align-self-center col-md-push-9">
-                <img src="../static/play-together-2.jpg" class="img-fluid" alt="Responsive image">
-            </div>
-            <div class="col-sm-6">
-                <legend> Record Your Part</legend>
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="scoreIdInput" placeholder="0">
-                    <label for="scoreIdInput">Enter Score ID</label>
-                </div>
-                <button onclick="handlePlay()" class="btn btn-outline-primary btn-lg">
-                    Play!
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<footer class="footer">
-    <div class="container">
-        <a href='https://www.freepik.com/vectors/music'><span class="text-muted"> Music vector created by pch.vector - www.freepik.com </span></a>
-    </div>
-</footer>
-<script>
-    function handlePlay() {
-        window.location.href += 'record_track/' + document.getElementById('scoreIdInput').value
-    }
-</script>
-<script src="../static/bootstrap.bundle.min.js"></script>
+      </div>
+    </main>
+    <footer class="mt-auto text-white-50">
+      <p>Made with &#10084 by Andy Wang, James Ball, Jess Lally, Tabs Goldman, and William Grant.</p>
+    </footer>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </body>
 
 </html>

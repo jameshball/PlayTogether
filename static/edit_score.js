@@ -183,11 +183,11 @@ function listTracks() {
                     row.id = "track_" + track["track_id"]
 
                     const name = document.createElement("div")
-                    name.className = "col-3"
+                    name.className = "col-2"
                     name.innerText = track["name"]
 
                     const buttonDiv = document.createElement("div")
-                    buttonDiv.className = "col-3 offset-6"
+                    buttonDiv.className = "col-2 offset-6"
 
                     const button = document.createElement("button")
                     button.onclick = function () {
