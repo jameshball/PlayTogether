@@ -10,7 +10,7 @@ let buttons = [];
 
 function createDeleteButton(barNum) {
     const button = document.createElement("button");
-    button.innerHTML = "do something";
+    button.innerHTML = "Remove";
 
     const body = document.getElementById("sheet-music");
     body.appendChild(button);
@@ -29,16 +29,16 @@ function removeDeleteButtons() {
     buttons = []
 }
 
-let renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
-
 const barWidth = 200
 const maxBarsPerLine = 4
 const maxViewBoxWidth = maxBarsPerLine * barWidth + 20
 
 function renderScore() {
     removeDeleteButtons()
-    svg.removeChild(svg.firstChild)
-    renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
+    if (svg.firstChild) {
+        svg.removeChild(svg.firstChild)
+    }
+    const renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
 
     // And get a drawing context:
     const context = renderer.getContext();
@@ -46,13 +46,13 @@ function renderScore() {
     let prevTimeSig = null;
     let prevMeasure = null;
     let lastLineBarCount = 0;
-    let viewBoxWidth = 20;
+    let viewBoxWidth = 10;
     let viewBoxHeight = 100;
 
     for (let i = 0; i < barTimeSigs.length; i++) {
         console.log(lastLineBarCount)
         if (prevMeasure == null) {
-            const stave = new VF.Stave(10, 0, barWidth);
+            const stave = new VF.Stave(0, 0, barWidth);
             // Size our SVG:
             viewBoxWidth += barWidth
             svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
@@ -68,7 +68,7 @@ function renderScore() {
                 viewBoxHeight += prevMeasure.height
                 // we don't add onto viewBoxWidth because there's already a full line
                 svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
-                const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, barWidth)
+                const stave = new VF.Stave(0, prevMeasure.height + prevMeasure.y, barWidth)
                 createDeleteButton(i)
                 lastLineBarCount = 1
 
@@ -149,6 +149,82 @@ function handleSubmit(event) {
     request.send(JSON.stringify(json));
 }
 
-const form = document.querySelector('form');
-form.addEventListener('submit', handleSubmit);
+function listTracks() {
+    const container = document.getElementById("existing-tracks");
+    container.innerHTML = "" // clear all existing ones
 
+    const request = new XMLHttpRequest();
+    request.open("GET", "/api/list_tracks/" + score_id);
+    request.responseType = "json";
+
+    request.onload = function () {
+        if (request.status === 200) {
+            request.response.forEach(track => {
+                    const row = document.createElement("div")
+                    row.className = "row track"
+                    row.id = "track_" + track["track_id"]
+
+
+                    const name = document.createElement("div")
+                    name.className = "three columns"
+                    name.innerText = track["name"]
+
+                    const buttonDiv = document.createElement("div")
+                    buttonDiv.className = "three columns offset-by-six"
+
+                    const button = document.createElement("button")
+                    button.onclick = function () {
+                        removeTrack(track["track_id"])
+                    }
+                    button.innerText = "Remove"
+
+                    buttonDiv.append(button)
+
+                    row.append(name, buttonDiv)
+
+                    container.append(row)
+                }
+            )
+        } else {
+        }
+    }
+
+    request.send();
+}
+
+function addTrack(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const track_name = data.get('name')
+
+    const request = new XMLHttpRequest();
+    request.open("POST", "/api/add_track/" + score_id);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onload = function () {
+        listTracks()
+    }
+
+    request.send(JSON.stringify({
+        "name": track_name
+    }))
+}
+
+function removeTrack(track_id) {
+    const request = new XMLHttpRequest();
+    request.open("DELETE", "/api/delete_track/" + score_id + "/" + track_id);
+
+    request.onload = function () {
+        if (request.status === 200) {
+            document.getElementById("track_" + track_id).remove();
+        } else {
+        }
+    }
+    request.send();
+}
+
+const barForm = document.getElementById('bar_form');
+barForm.addEventListener('submit', handleSubmit);
+
+const trackForm = document.getElementById('track_form');
+trackForm.addEventListener('submit', addTrack)
+listTracks()
