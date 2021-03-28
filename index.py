@@ -7,7 +7,20 @@ from flask import Flask, render_template, send_file, request, redirect, make_res
 from flask_sqlalchemy import SQLAlchemy
 from pydub import AudioSegment
 
+
+class ReverseProxied(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        scheme = environ.get('HTTP_X_FORWARDED_PROTO')
+        if scheme:
+            environ['wsgi.url_scheme'] = scheme
+        return self.app(environ, start_response)
+
+
 app = Flask(__name__)
+app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -142,4 +155,4 @@ def api_merge_tracks(score_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='127.0.0.1', port=8080)
