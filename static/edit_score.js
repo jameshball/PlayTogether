@@ -3,7 +3,6 @@ VF = Vex.Flow;
 // Create an SVG renderer and attach it to the DIV element named "boo".
 const svg = document.getElementById("score");
 
-
 const bars = [];
 const barTimeSigs = [];
 let buttons = [];
@@ -50,7 +49,6 @@ function renderScore() {
     let viewBoxHeight = 100;
 
     for (let i = 0; i < barTimeSigs.length; i++) {
-        console.log(lastLineBarCount)
         if (prevMeasure == null) {
             const stave = new VF.Stave(10, 0, barWidth);
             // Size our SVG:

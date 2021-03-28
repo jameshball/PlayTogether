@@ -1,4 +1,5 @@
 let track_data = null;
+VF = Vex.Flow;
 
 function getSamplingTracks() {
     let dropdown = document.getElementById('sampling-track-dropdown')
@@ -190,5 +191,28 @@ function finishRecording() {
     audio_elems = []
 }
 
+function setupScore() {
+    const div = document.getElementById('score')
+    const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG)
+    const context = renderer.getContext()
+    const staves = [new VF.Stave(10, 10, 200).addClef('treble').addTimeSignature('4/4'),
+        new VF.Stave(10, 210, 200).addClef('treble').addTimeSignature('3/4')]
+
+    const tickContext = new VF.TickContext()
+    tickContext.preFormat().setX(400)
+
+    note = staves.shift(); // pluck the left-most undrawn note
+    if (!note) return; // if we're out of notes, return.
+    const group = context.openGroup(); // create an SVG group element
+    note.setContext(context).draw(); // draw the bar
+    context.closeGroup(); // and close the group
+
+    group.classList.add('scroll'); // set up the group for scrolling
+
+    const box = group.getBoundingClientRect();
+    group.classList.add('scrolling'); // and now start it scrolling
+}
+
 getSamplingTracks();
+setupScore()
 
