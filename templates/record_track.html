@@ -26,7 +26,6 @@
         <p id="bottom_sig"></p>
     </div>
     <a id="download">Download</a>
-    <button id="stop">Stop</button>
     <button id="record">record</button>
     <div>metrognome</div>
     <button>redo</button>
@@ -41,54 +40,9 @@
 </div>
 <script>
     const score_id =
-    {{score_id}}
-    const track_id =
-    {{track_id}}
+    {{score_id}};
     const bars =
-    {{bars}}
-    const bars_test = [
-        {tempo: 100, top_sig: 4, bottom_sig: 4},
-        {tempo: 100, top_sig: 4, bottom_sig: 4},
-        {tempo: 120, top_sig: 5, bottom_sig: 2},
-        {tempo: 200, top_sig: 8, bottom_sig: 10}
-    ]
-
-    let shouldStop = false;
-    let stopped = false;
-    const downloadLink = document.getElementById('download');
-    const stopButton = document.getElementById('stop');
-
-    stopButton.addEventListener('click', function () {
-        shouldStop = true;
-    });
-
-    const handleSuccess = function (stream) {
-        const options = {mimeType: 'audio/webm'};
-        const recordedChunks = [];
-        const mediaRecorder = new MediaRecorder(stream, options);
-
-        mediaRecorder.addEventListener('dataavailable', function (e) {
-            console.log("available");
-            if (e.data.size > 0) {
-                recordedChunks.push(e.data);
-            }
-
-            if (shouldStop === true && stopped === false) {
-                mediaRecorder.stop();
-                stopped = true;
-            }
-        });
-
-        mediaRecorder.addEventListener('stop', function () {
-            downloadLink.href = URL.createObjectURL(new Blob(recordedChunks));
-            downloadLink.download = 'acetest.wav';
-        });
-
-        mediaRecorder.start(2000);
-    };
-
-    navigator.mediaDevices.getUserMedia({audio: true, video: false})
-        .then(handleSuccess);
+    {{bars | safe}};
 </script>
 <script src="../../static/record_track.js"></script>
 <script src="../../static/metronome.js"></script>

@@ -29,16 +29,16 @@ $(document).ready(function () {
     const cpbMin = bpbMin;
     const cpbMax = bpbMax;
     let beat = 1; // the current beat in the bar
-    let beatsPerBar = bars_test[0].top_sig;
+    let beatsPerBar = bars[0].top_sig;
     let clicksPerBeat = 1;
-    let tempo = bars_test[0].tempo; // in beats per minute
+    let tempo = bars[0].tempo; // in beats per minute
     let isPlaying = false;
     let barIndex = 0;
     let interval; // used to hold the setInterval data so it can be cleared when the metronome stops
 
     document.getElementById('tempo').innerText = tempo;
     document.getElementById('top_sig').innerText = beatsPerBar;
-    document.getElementById('bottom_sig').innerText = bars_test[0].bottom_sig;
+    document.getElementById('bottom_sig').innerText = bars[0].bottom_sig;
 
     const record = $("#record");
 
@@ -58,9 +58,8 @@ $(document).ready(function () {
 
     // Function to handle starting and stopping the metronome
     record.click(function () {
-        console.log(bars_test)
-        tempo = bars_test[0].tempo
-        beatsPerBar = bars_test[0].top_sig
+        tempo = bars[0].tempo
+        beatsPerBar = bars[0].top_sig
         if (!isPlaying) {
             isPlaying = true;
             playClick();
@@ -78,17 +77,17 @@ $(document).ready(function () {
     function playClick() {
         if ((beat % (beatsPerBar * clicksPerBeat)) === 1) {
             clearInterval(interval);
-            if (barIndex >= bars_test.length) {
+            if (barIndex >= bars.length) {
                 isPlaying = false;
                 barIndex = 0;
                 finishRecording();
                 return;
             }
-            tempo = bars_test[barIndex].tempo;
+            tempo = bars[barIndex].tempo;
             document.getElementById('tempo').innerText = tempo;
-            beatsPerBar = bars_test[barIndex].top_sig;
+            beatsPerBar = bars[barIndex].top_sig;
             document.getElementById('top_sig').innerText = beatsPerBar;
-            document.getElementById('bottom_sig').innerText = bars_test[barIndex].bottom_sig;
+            document.getElementById('bottom_sig').innerText = bars[barIndex].bottom_sig;
             beat = 1;
             interval = setInterval(playClick, (60000 / tempo) / clicksPerBeat);
             // We're on the down beat of the bar

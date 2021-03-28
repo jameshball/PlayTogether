@@ -15,12 +15,12 @@ request.open('GET', track_url, true)
 
 request.onload = function () {
     if (request.status === 200) {
-        const tracks_data = JSON.parse(request.responseText)
+        const tracks_data = request.response
         console.log(tracks_data)
         let track
 
         for (let i=0; i < tracks_data.length; i++) {
-            track = document.createElement('track')
+            track = document.createElement('option')
             track.text = tracks_data[i].name
             track.value = tracks_data[i].track_id
             dropdown.add(track)
@@ -32,12 +32,38 @@ request.onload = function () {
 
 request.send()
 
-function startRecording() {
+let shouldStop = false;
+let stopped = false;
+let mediaRecorder = null
 
+function startRecording() {
+    const handleSuccess = function (stream) {
+        const options = {mimeType: 'audio/webm'};
+        const recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream, options);
+
+        mediaRecorder.addEventListener('dataavailable', function (e) {
+            console.log("available");
+            if (e.data.size > 0) {
+                recordedChunks.push(e.data);
+            }
+        });
+
+        mediaRecorder.addEventListener('stop', function () {
+            console.log("stop");
+            downloadLink.href = URL.createObjectURL(new Blob(recordedChunks));
+            downloadLink.download = 'acetest.wav';
+        });
+
+        mediaRecorder.start(2000);
+    };
+
+    navigator.mediaDevices.getUserMedia({audio: true, video: false})
+        .then(handleSuccess);
 }
 
 function finishRecording() {
-
+    mediaRecorder.stop()
 }
 
 function handleSubmit(event) {
