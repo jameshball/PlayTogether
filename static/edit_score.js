@@ -1,16 +1,12 @@
 VF = Vex.Flow;
 
-// Create an SVG renderer and attach it to the DIV element named "boo".
-const svg = document.getElementById("score");
-
-const bars = [];
-const barTimeSigs = [];
+let bars = []
 let buttons = [];
 const sheet_music = document.getElementById("sheet_music")
 
 function createDeleteButton(barNum, col) {
     const button = document.createElement("button");
-    button.className="btn btn-sm btn-danger"
+    button.className = "btn btn-sm btn-danger"
     button.innerHTML = "Remove";
     buttons.push(button)
 
@@ -21,6 +17,10 @@ function createDeleteButton(barNum, col) {
     });
 }
 
+function timeSigString(bar) {
+    return bar["top_sig"] + "/" + bar["bottom_sig"];
+}
+
 const barWidth = 200
 const maxBarsPerLine = 4
 const maxViewBoxWidth = maxBarsPerLine * barWidth + 1
@@ -29,12 +29,12 @@ function renderScore() {
     buttons = []
     sheet_music.innerHTML = ""
 
-    let prevTimeSig = null;
+    let prevBarTimeSig = "";
     let prevMeasure = null;
     let viewBoxWidth = maxViewBoxWidth;
     let viewBoxHeight = 100;
 
-    for (let firstOfLine = 0; firstOfLine < barTimeSigs.length; firstOfLine += maxBarsPerLine) {
+    for (let firstOfLine = 0; firstOfLine < bars.length; firstOfLine += maxBarsPerLine) {
         const line = document.createElement("div")
         line.className = "row"
 
@@ -43,7 +43,7 @@ function renderScore() {
 
         const staveDiv = document.createElement("div")
         staveDiv.className = "col-12"
-        staveDiv.style.padding="0"
+        staveDiv.style.padding = "0"
 
         staveRow.append(staveDiv)
 
@@ -56,10 +56,11 @@ function renderScore() {
 
         const renderer = new VF.Renderer(staveDiv, VF.Renderer.Backends.SVG)
         const context = renderer.getContext()
-        for (let i = firstOfLine; i < Math.min(firstOfLine + maxBarsPerLine, barTimeSigs.length); i++) {
+        for (let i = firstOfLine; i < Math.min(firstOfLine + maxBarsPerLine, bars.length); i++) {
+            const curBarTimeSig = timeSigString(bars[i])
             const buttonCol = document.createElement("div")
             buttonCol.className = "col-" + (12 / maxBarsPerLine)
-            buttonCol.style.padding="0"
+            buttonCol.style.padding = "0"
             buttonRow.append(buttonCol)
 
             createDeleteButton(i, buttonCol)
@@ -70,26 +71,26 @@ function renderScore() {
             if (i === 0) {
                 const stave = new VF.Stave(0, 0, barWidth);
 
-                stave.addClef("treble").addTimeSignature(barTimeSigs[i]).setContext(context).draw()
+                stave.addClef("treble").addTimeSignature(curBarTimeSig).setContext(context).draw()
                 prevMeasure = stave
-                prevTimeSig = barTimeSigs[i]
+                prevBarTimeSig = curBarTimeSig
             } else if (i === firstOfLine) {
                 const stave = new VF.Stave(0, 0, barWidth);
 
-                if (prevTimeSig !== barTimeSigs[i]) {
-                    stave.addTimeSignature(barTimeSigs[i])
-                    prevTimeSig = barTimeSigs[i]
+                if (prevBarTimeSig !== curBarTimeSig) {
+                    stave.addTimeSignature(curBarTimeSig)
+                    prevBarTimeSig = curBarTimeSig
                 }
 
                 stave.setContext(context).draw()
                 prevMeasure = stave
-                prevTimeSig = barTimeSigs[i]
+                prevBarTimeSig = curBarTimeSig
             } else {
                 const stave = new VF.Stave(prevMeasure.width + prevMeasure.x, prevMeasure.y, barWidth)
 
-                if (prevTimeSig !== barTimeSigs[i]) {
-                    stave.addTimeSignature(barTimeSigs[i])
-                    prevTimeSig = barTimeSigs[i]
+                if (prevBarTimeSig !== curBarTimeSig) {
+                    stave.addTimeSignature(curBarTimeSig)
+                    prevBarTimeSig = curBarTimeSig
                 }
 
                 stave.setContext(context).draw()
@@ -100,18 +101,18 @@ function renderScore() {
 }
 
 function removeStave(barNum) {
-    barTimeSigs.splice(barNum, 1)
-    renderScore()
+    bars.splice(barNum, 1)
+    renderAndUpload()
 }
 
-function loadBars(){
+function loadBars() {
     const request = new XMLHttpRequest();
     request.open("GET", "/api/get_score/" + score_id);
     request.responseType = "json";
     request.setRequestHeader("Content-Type", "application/json");
     request.onload = function () {
         if (request.status === 200) {
-            request.response["bars"].forEach(bar => barTimeSigs.push(bar["top_sig"] + "/" + bar["bottom_sig"]));
+            bars = request.response["bars"]
             renderScore()
         } else {
         }
@@ -119,20 +120,7 @@ function loadBars(){
     request.send()
 }
 
-function handleSubmit(event) {
-    event.preventDefault();
-    const data = new FormData(event.target);
-
-    // Add new bars
-    let num_bars = data.get('num_bars')
-
-    for (num_bars; num_bars > 0; num_bars--) {
-        barTimeSigs.push(data.get('time_sig'))
-        const time_sig = data.get('time_sig').split("/")
-        let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
-        bars.push(bar)
-    }
-
+function renderAndUpload() {
     renderScore()
 
     // Get bars as JSON
@@ -158,6 +146,22 @@ function handleSubmit(event) {
 
     elem.innerText = "Please wait...";
     request.send(JSON.stringify(json));
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+
+    // Add new bars
+    let num_bars = data.get('num_bars')
+
+    for (num_bars; num_bars > 0; num_bars--) {
+        const time_sig = data.get('time_sig').split("/")
+        let bar = {"top_sig": time_sig[0], "bottom_sig": time_sig[1], "tempo": data.get('tempo')}
+        bars.push(bar)
+    }
+
+    renderAndUpload()
 }
 
 function listTracks() {
