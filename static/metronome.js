@@ -48,9 +48,15 @@ $(document).ready(function () {
         src: ["../../static/metro_down.mp3"]
     });
 
+    let countIn = new Howl({
+        src: ["../../static/metro_count.mp3"]
+    });
+
     let subdivisionLowBlockSound = new Howl({
         src: ["../../static/metro_down.mp3"]
     });
+
+    let initialBeats = 0;
 
     // Function to handle starting and stopping the metronome
     record.click(function () {
@@ -69,38 +75,47 @@ $(document).ready(function () {
         beat = 1; // reset the beat to the down beat
         barIndex = 0;
         isPlaying = false;
+        initialBeats = 0;
         finishRecording();
     }
 
     // This function handles playing the click sound
     // Each time playClick() is called, the beat variable is incremented so we know what beat we're on
     function playClick() {
-        if ((beat % (beatsPerBar * clicksPerBeat)) === 1) {
-            clearInterval(interval);
-            if (barIndex >= bars.length) {
-                endMetronome();
-                return;
-            }
-            tempo = bars[barIndex].tempo;
-            document.getElementById('tempo').innerText = tempo;
-            beatsPerBar = bars[barIndex].top_sig;
-            document.getElementById('top_sig').innerText = beatsPerBar;
-            document.getElementById('bottom_sig').innerText = bars[barIndex].bottom_sig;
-            const secs = beatsPerBar / (tempo/60.0)
-            group.style.transition = 'transform ' + secs + 's linear';
-            group.style.transform = 'translate(-' + (200 * (barIndex + 1)) + 'px, 0)';
-            beat = 1;
+        if (initialBeats === 0) {
+            tempo = bars[0].tempo
+            beatsPerBar = bars[0].top_sig
             interval = setInterval(playClick, (60000 / tempo) / clicksPerBeat);
-            // We're on the down beat of the bar
-            highBlockSound.play();
-            barIndex++;
-        } else if (((beat % clicksPerBeat) === 1) || (clicksPerBeat === 1)) {
-            // We're on a strong beat (aside from the down beat)
-            lowBlockSound.play();
-        } else {
-            // We're on a subdivision of the beat
-            subdivisionLowBlockSound.play();
         }
-        beat++;
+        if (initialBeats < beatsPerBar) {
+            countIn.play();
+            initialBeats++;
+        } else {
+            if ((beat % (beatsPerBar * clicksPerBeat)) === 1) {
+                clearInterval(interval);
+                if (barIndex >= bars.length) {
+                    endMetronome();
+                    return;
+                }
+                document.getElementById('tempo').innerText = tempo;
+                document.getElementById('top_sig').innerText = beatsPerBar;
+                document.getElementById('bottom_sig').innerText = bars[barIndex].bottom_sig;
+                const secs = beatsPerBar / (tempo / 60.0)
+                group.style.transition = 'transform ' + secs + 's linear';
+                group.style.transform = 'translate(-' + (200 * (barIndex + 1)) + 'px, 0)';
+                beat = 1;
+                interval = setInterval(playClick, (60000 / tempo) / clicksPerBeat);
+                // We're on the down beat of the bar
+                highBlockSound.play();
+                barIndex++;
+            } else if (((beat % clicksPerBeat) === 1) || (clicksPerBeat === 1)) {
+                // We're on a strong beat (aside from the down beat)
+                lowBlockSound.play();
+            } else {
+                // We're on a subdivision of the beat
+                subdivisionLowBlockSound.play();
+            }
+            beat++;
+        }
     }
 });

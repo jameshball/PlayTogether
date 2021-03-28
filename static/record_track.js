@@ -141,7 +141,9 @@ function startRecording() {
         });
 
         for (let key in audio_elems) {
-            audio_elems[key].play();
+            if (document.getElementById(key).parentElement.lastChild.checked) {
+                audio_elems[key].play();
+            }
         }
 
         rec.start(2000);
