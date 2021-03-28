@@ -21,16 +21,22 @@
         <div class="col">
           <legend> Record your part </legend>
           <div class="form-floating mb-3">
-            <input type="number" class="form-control" id="floatingInput" placeholder="0">
-            <label for="floatingInput">Enter ID</label>
+            <input type="number" class="form-control" id="scoreIdInput" placeholder="0">
+            <label for="scoreIdInput">Enter ID</label>
           </div>
-          <button type="submit" class="btn btn-outline-primary btn-lg">
-            Submit
+          <button onclick="handlePlay()" class="btn btn-outline-primary btn-lg">
+            Play!
           </button>
         </div>
       </div>
     </div>
   </div>
+  <a href='https://www.freepik.com/vectors/music'>Music vector created by pch.vector - www.freepik.com</a>
+  <script>
+      function handlePlay() {
+          window.location.href += 'record_track/' + document.getElementById('scoreIdInput').value
+      }
+  </script>
   <script src="../static/bootstrap.bundle.min.js"></script>
 </body>
 
