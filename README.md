@@ -18,8 +18,8 @@ PYTHONUNBUFFERED=1 && DATABASE_URL="postgresql://postgres:password@localhost:543
 
 ## Credits
 
-- Andy Wang
-- James Ball
-- Jess Lally
-- Tabs Goldman
-- William Grant
+- [Andy Wang](https://github.com/cbeuw)
+- [James Ball](https://github.com/jameshball)
+- [Jess Lally](https://github.com/jessicalally)
+- [Tabs Goldman](https://github.com/tabsg)
+- [William Grant](https://github.com/wdhg)
