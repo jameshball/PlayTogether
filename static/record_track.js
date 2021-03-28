@@ -153,6 +153,7 @@ function startRecording() {
         }
 
         rec.start(2000);
+        group.classList.add('scrolling');
     };
 
     navigator.mediaDevices.getUserMedia({audio: true, video: false})
@@ -191,26 +192,40 @@ function finishRecording() {
     audio_elems = []
 }
 
+let group
+
 function setupScore() {
     const div = document.getElementById('score')
     const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG)
     const context = renderer.getContext()
-    const staves = [new VF.Stave(10, 10, 200).addClef('treble').addTimeSignature('4/4'),
-        new VF.Stave(10, 210, 200).addClef('treble').addTimeSignature('3/4')]
 
     const tickContext = new VF.TickContext()
     tickContext.preFormat().setX(400)
 
-    note = staves.shift(); // pluck the left-most undrawn note
-    if (!note) return; // if we're out of notes, return.
-    const group = context.openGroup(); // create an SVG group element
-    note.setContext(context).draw(); // draw the bar
+    group = context.openGroup()
+    let prevTimeSig = null
+
+    for (let i = 0; i < bars.length; i++) {
+        const time_sig = bars[i].top_sig + '/' + bars[i].bottom_sig
+        const tempo = bars[i].tempo
+
+        if (prevTimeSig == null) {
+            new VF.Stave(10 + (i * 200), 10, 200).addClef('treble').addTimeSignature(time_sig).setContext(context).draw()
+        } else {
+            if (prevTimeSig !== time_sig) {
+                new VF.Stave(10 + (i * 200), 10, 200).addTimeSignature(time_sig).setContext(context).draw()
+            } else {
+                new VF.Stave(10 + (i * 200), 10, 200).setContext(context).draw()
+            }
+        }
+
+        prevTimeSig = time_sig
+    }
+
     context.closeGroup(); // and close the group
 
-    group.classList.add('scroll'); // set up the group for scrolling
-
+    group.classList.add('scroll');
     const box = group.getBoundingClientRect();
-    group.classList.add('scrolling'); // and now start it scrolling
 }
 
 getSamplingTracks();
