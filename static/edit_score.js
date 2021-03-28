@@ -10,7 +10,7 @@ let buttons = [];
 
 function createDeleteButton(barNum) {
     const button = document.createElement("button");
-    button.innerHTML = "do something";
+    button.innerHTML = "Remove";
 
     const body = document.getElementById("sheet-music");
     body.appendChild(button);
@@ -29,16 +29,16 @@ function removeDeleteButtons() {
     buttons = []
 }
 
-let renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
-
 const barWidth = 200
 const maxBarsPerLine = 4
 const maxViewBoxWidth = maxBarsPerLine * barWidth + 20
 
 function renderScore() {
     removeDeleteButtons()
-    svg.removeChild(svg.firstChild)
-    renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
+    if (svg.firstChild){
+        svg.removeChild(svg.firstChild)
+    }
+    const renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
 
     // And get a drawing context:
     const context = renderer.getContext();
@@ -46,13 +46,13 @@ function renderScore() {
     let prevTimeSig = null;
     let prevMeasure = null;
     let lastLineBarCount = 0;
-    let viewBoxWidth = 20;
+    let viewBoxWidth = 10;
     let viewBoxHeight = 100;
 
     for (let i = 0; i < barTimeSigs.length; i++) {
         console.log(lastLineBarCount)
         if (prevMeasure == null) {
-            const stave = new VF.Stave(10, 0, barWidth);
+            const stave = new VF.Stave(0, 0, barWidth);
             // Size our SVG:
             viewBoxWidth += barWidth
             svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
@@ -68,7 +68,7 @@ function renderScore() {
                 viewBoxHeight += prevMeasure.height
                 // we don't add onto viewBoxWidth because there's already a full line
                 svg.firstChild.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
-                const stave = new VF.Stave(10, prevMeasure.height + prevMeasure.y, barWidth)
+                const stave = new VF.Stave(0, prevMeasure.height + prevMeasure.y, barWidth)
                 createDeleteButton(i)
                 lastLineBarCount = 1
 
