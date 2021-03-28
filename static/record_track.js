@@ -1,4 +1,34 @@
 let track_data = null;
+let audio_elems = {}
+
+function updateAudioElements(event) {
+    const dropdown = event.target
+    if (dropdown.value === 0) {
+        return
+    }
+    const samples_url = '/api/get_sample/' + dropdown.value
+    const request = new XMLHttpRequest()
+    request.responseType = "blob";
+    request.open('GET', samples_url, true)
+
+    request.onload = function () {
+        if (request.status === 200) {
+            if (dropdown.id in audio_elems) {
+                document.body.removeChild(audio_elems[dropdown.id])
+            }
+            let audio_file = request.response
+            let audio_elem = document.createElement('audio')
+            audio_elem.src = URL.createObjectURL(audio_file)
+            audio_elem.type = "audio/mpeg"
+            document.body.appendChild(audio_elem)
+            audio_elems[dropdown.id] = audio_elem
+        } else {
+            console.error('An error occurred fetching the sample')
+        }
+    }
+
+    request.send()
+}
 
 function getSamplingTracks() {
     let dropdown = document.getElementById('sampling-track-dropdown')
@@ -50,6 +80,7 @@ function getSamplingTracks() {
                 sample_dropdown.add(defaultOption)
                 sample_dropdown.selectedIndex = 0
                 sample_dropdown.id = "sample_dropdown_" + track_data[i].track_id
+                sample_dropdown.onchange = updateAudioElements
 
                 const samples_url = '/api/list_samples/' + track_data[i].track_id
                 const request = new XMLHttpRequest()
@@ -87,46 +118,6 @@ function getSamplingTracks() {
     request.send()
 }
 
-let audio_elems = []
-
-function prepareBackingTracks() {
-    const promises = [];
-    for (let i = 0; i < track_data.length; i++) {
-        if (document.getElementById("checkbox_" + track_data[i].track_id).checked) {
-            const dropdown = document.getElementById("sample_dropdown_" + track_data[i].track_id)
-            if (dropdown.value === 0) {
-                continue
-            }
-            const samples_url = '/api/get_sample/' + dropdown.value
-
-            const promise = new Promise(function () {
-                const request = new XMLHttpRequest()
-                request.responseType = "blob";
-                request.open('GET', samples_url)
-
-                request.onload = function () {
-                    if (request.status === 200) {
-                        let audio_file = request.response
-                        let audio_elem = document.createElement('audio')
-                        audio_elem.src = URL.createObjectURL(audio_file)
-                        audio_elem.type = "audio/mpeg"
-                        document.body.appendChild(audio_elem)
-                        audio_elems.push(audio_elem)
-                        console.log("loaded " + i)
-                    } else {
-                        console.error('An error occurred fetching the sample')
-                    }
-                }
-                request.send()
-            });
-
-            promises.push(promise)
-        }
-    }
-
-    return Promise.all(promises)
-}
-
 let rec = null
 
 function startRecording() {
@@ -139,29 +130,29 @@ function startRecording() {
             if (e.data.size > 0) {
                 recordedChunks.push(e.data);
             }
-            if (rec.state === "inactive") {
-                let blob = new Blob(recordedChunks, {type: 'audio/mpeg'});
-                rec.src = URL.createObjectURL(blob);
-                sendRecording(blob);
-            }
         });
 
-        console.log(audio_elems.length)
-        for (let i = 0; i < audio_elems.length; i++) {
-            audio_elems[i].play()
+        rec.addEventListener('stop', function () {
+            let blob = new Blob(recordedChunks, {type: 'audio/mpeg'});
+            rec.src = URL.createObjectURL(blob);
+            sendRecording(blob);
+        });
+
+        for (let key in audio_elems) {
+            audio_elems[key].play();
         }
 
         rec.start(2000);
     };
 
-    navigator.mediaDevices.getUserMedia({audio: true, video: false})
+    return navigator.mediaDevices.getUserMedia({audio: true, video: false})
         .then(handleSuccess);
 }
 
 function sendRecording(blob) {
     let elem = document.getElementById("errors");
     const track_id = document.getElementById('sampling-track-dropdown').value;
-    if (track_id === 0) {
+    if (track_id === "0") {
         elem.innerText = 'Please select a sampling track'
         return;
     }
@@ -187,7 +178,10 @@ function sendRecording(blob) {
 
 function finishRecording() {
     rec.stop()
-    audio_elems = []
+    for (let key in audio_elems) {
+        audio_elems[key].pause();
+        audio_elems[key].currentTime = 0;
+    }
 }
 
 getSamplingTracks();
