@@ -20,7 +20,7 @@
         <div id="score" class="ten columns"></div>
       </div>
     </div>
-  <form id="form">
+  <form id="bar_form">
       <div class="row">
           <label for="time_sig">Time Signature</label>
           <input type="text" name="time_sig" id="time_sig"><br>
@@ -38,6 +38,24 @@
   </form>
 
   <p id="errors"></p>
+</div>
+
+<div class="tracks container">
+<div class="row">
+  <h2 class="text-xl ten columns">Tracks</h2>
+</div>
+    <form id="track_form">
+        <div class="row track" id="track_new">
+            <div class="three columns">
+                <input placeholder="New track name" type="text" name="name">
+            </div>
+            <div class="three columns offset-by-six">
+                <button>Submit</button>
+            </div>
+        </div>
+    </form>
+    <div id="existing-tracks">
+    </div>
 </div>
 </body>
 

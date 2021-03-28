@@ -35,7 +35,7 @@ const maxViewBoxWidth = maxBarsPerLine * barWidth + 20
 
 function renderScore() {
     removeDeleteButtons()
-    if (svg.firstChild){
+    if (svg.firstChild) {
         svg.removeChild(svg.firstChild)
     }
     const renderer = new VF.Renderer(svg, VF.Renderer.Backends.SVG);
@@ -149,6 +149,82 @@ function handleSubmit(event) {
     request.send(JSON.stringify(json));
 }
 
-const form = document.querySelector('form');
-form.addEventListener('submit', handleSubmit);
+function listTracks() {
+    const container = document.getElementById("existing-tracks");
+    container.innerHTML = "" // clear all existing ones
 
+    const request = new XMLHttpRequest();
+    request.open("GET", "/api/list_tracks/" + score_id);
+    request.responseType = "json";
+
+    request.onload = function () {
+        if (request.status === 200) {
+            request.response.forEach(track => {
+                    const row = document.createElement("div")
+                    row.className = "row track"
+                    row.id = "track_" + track["track_id"]
+
+
+                    const name = document.createElement("div")
+                    name.className = "three columns"
+                    name.innerText = track["name"]
+
+                    const buttonDiv = document.createElement("div")
+                    buttonDiv.className = "three columns offset-by-six"
+
+                    const button = document.createElement("button")
+                    button.onclick = function () {
+                        removeTrack(track["track_id"])
+                    }
+                    button.innerText = "Remove"
+
+                    buttonDiv.append(button)
+
+                    row.append(name, buttonDiv)
+
+                    container.append(row)
+                }
+            )
+        } else {
+        }
+    }
+
+    request.send();
+}
+
+function addTrack(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const track_name = data.get('name')
+
+    const request = new XMLHttpRequest();
+    request.open("POST", "/api/add_track/" + score_id);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onload = function () {
+        listTracks()
+    }
+
+    request.send(JSON.stringify({
+        "name": track_name
+    }))
+}
+
+function removeTrack(track_id) {
+    const request = new XMLHttpRequest();
+    request.open("DELETE", "/api/delete_track/" + score_id + "/" + track_id);
+
+    request.onload = function () {
+        if (request.status === 200) {
+            document.getElementById("track_" + track_id).remove();
+        } else {
+        }
+    }
+    request.send();
+}
+
+const barForm = document.getElementById('bar_form');
+barForm.addEventListener('submit', handleSubmit);
+
+const trackForm = document.getElementById('track_form');
+trackForm.addEventListener('submit', addTrack)
+listTracks()
