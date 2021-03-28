@@ -166,16 +166,17 @@ function listTracks() {
 
 
                     const name = document.createElement("div")
-                    name.className = "three columns"
+                    name.className = "col-3"
                     name.innerText = track["name"]
 
                     const buttonDiv = document.createElement("div")
-                    buttonDiv.className = "three columns offset-by-six"
+                    buttonDiv.className = "col-3 offset-6"
 
                     const button = document.createElement("button")
                     button.onclick = function () {
                         removeTrack(track["track_id"])
                     }
+                    button.className = "btn btn-danger"
                     button.innerText = "Remove"
 
                     buttonDiv.append(button)
