@@ -1,4 +1,5 @@
 let track_data = null;
+VF = Vex.Flow;
 let audio_elems = {}
 
 function updateAudioElements(event) {
@@ -29,6 +30,7 @@ function updateAudioElements(event) {
 
     request.send()
 }
+
 
 function getSamplingTracks() {
     let dropdown = document.getElementById('sampling-track-dropdown')
@@ -143,6 +145,7 @@ function startRecording() {
         }
 
         rec.start(2000);
+        group.classList.add('scrolling');
     };
 
     return navigator.mediaDevices.getUserMedia({audio: true, video: false})
@@ -184,5 +187,42 @@ function finishRecording() {
     }
 }
 
+let group
+
+function setupScore() {
+    const div = document.getElementById('score')
+    const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG)
+    const context = renderer.getContext()
+
+    const tickContext = new VF.TickContext()
+    tickContext.preFormat().setX(400)
+
+    group = context.openGroup()
+    let prevTimeSig = null
+
+    for (let i = 0; i < bars.length; i++) {
+        const time_sig = bars[i].top_sig + '/' + bars[i].bottom_sig
+        const tempo = bars[i].tempo
+
+        if (prevTimeSig == null) {
+            new VF.Stave(10 + (i * 200), 10, 200).addClef('treble').addTimeSignature(time_sig).setContext(context).draw()
+        } else {
+            if (prevTimeSig !== time_sig) {
+                new VF.Stave(10 + (i * 200), 10, 200).addTimeSignature(time_sig).setContext(context).draw()
+            } else {
+                new VF.Stave(10 + (i * 200), 10, 200).setContext(context).draw()
+            }
+        }
+
+        prevTimeSig = time_sig
+    }
+
+    context.closeGroup(); // and close the group
+
+    group.classList.add('scroll');
+    const box = group.getBoundingClientRect();
+}
+
 getSamplingTracks();
+setupScore()
 
