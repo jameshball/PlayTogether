@@ -124,9 +124,8 @@ def api_merge_tracks(score_id):
     req = request.get_json(force=True)
 
     segments = []
-    for d in req:
-        sample = Sample.query.join(Track).filter(Track.id == d["track_id"], Sample.id == d["sample_id"]).first_or_404()
-        # temp = NamedTemporaryFile('w+b', suffix=".mp3")
+    for sample_id in req:
+        sample = Sample.query.get_or_404(sample_id)
         temp = NamedTemporaryFile(suffix=".mp3", delete=False)
         temp.write(sample.file)
         segments.append(AudioSegment.from_file(temp.name))
