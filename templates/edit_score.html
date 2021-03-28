@@ -1,72 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Score</title>
-  <link href="../static/bootstrap.min.css" rel="stylesheet">
-  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Score</title>
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/edit_score.css" rel="stylesheet">
+    <meta charset="UTF-8">
 </head>
 <body>
 <div class="container-fluid">
-  <div class="col-8 offset-2">
+    <div class="col-8 offset-2">
+        <div class="row">
+            <div class="title">
+                <h2>Add a New Score</h2>
+            </div>
+        </div>
 
-    <div class="row">
-      <h1 class="text-xl">Add a new score</h1>
+        <div class="row">
+            <div id="sheet_music">
+            </div>
+        </div>
+        <form id="bar_form" style="margin: 30px 0px 30px 0px">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="time_sig" id="time_sig">
+                <label for="time_sig">Time Signature</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="tempo" id="tempo">
+                <label for="tempo">Tempo</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" name="num_bars" id="num_bars">
+                <label for="num_bars">Number of Bars</label>
+            </div>
+
+            <button class="btn btn-outline-success btn-lg">Submit</button>
+        </form>
+
+        <p id="errors"></p>
     </div>
-
-    <div class="row">
-      <div id="sheet_music">
-      </div>
-    </div>
-    <form id="bar_form">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" name="time_sig" id="time_sig">
-        <label for="time_sig">Time Signature</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" name="tempo" id="tempo">
-        <label for="tempo">Tempo</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" name="num_bars" id="num_bars">
-        <label for="num_bars">Number of Bars</label>
-      </div>
-
-      <button class="btn btn-outline-success btn-lg">Submit</button>
-    </form>
-
-    <p id="errors"></p>
-  </div>
 </div>
 
 <div class="tracks container-fluid">
-  <div class="col-8 offset-2">
-    <div class="row">
-      <h2 class="text-xl">Tracks</h2>
-    </div>
-    <form id="track_form">
-      <div class="row track" id="track_new">
-        <div class="col-3">
-          <input placeholder="New track name" type="text" name="name">
+    <div class="col-8 offset-2">
+        <div class="row">
+            <div class="title">
+                <h2>Tracks</h2>
+            </div>
         </div>
-        <div class="col-3 offset-6">
-          <button class="btn btn-primary">Submit</button>
+
+        <form id="track_form">
+            <div class="row track" id="track_new" style="margin-bottom: 20px;">
+                <div class="col-3 my-auto">
+                    <div class="form-floating mb-3" id="track_new" style="margin-bottom: 0 !important;">
+                        <input type="text" class="form-control" name="name" id="new-track">
+                        <label for="new-track">Enter New Track Name</label>
+                    </div>
+                </div>
+
+                <div class="col-3 offset-6 my-auto">
+                    <button class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="existing-tracks" style="margin-bottom: 30px">
         </div>
-      </div>
-    </form>
-    <div id="existing-tracks">
     </div>
-  </div>
 </div>
 </body>
 
 <footer>
-  <script>
-      const score_id =
-      {{score_id}}
-  </script>
-  <script src="../static/bootstrap.bundle.min.js"></script>
-  <script src="../static/vexflow-debug.js"></script>
-  <script src="../static/edit_score.js"></script>
+    <script>
+        const score_id =
+        {{score_id}}
+    </script>
+    <script src="../static/bootstrap.bundle.min.js"></script>
+    <script src="../static/vexflow-debug.js"></script>
+    <script src="../static/edit_score.js"></script>
 </footer>
 </html>

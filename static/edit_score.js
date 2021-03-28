@@ -176,9 +176,11 @@ function listTracks() {
         if (request.status === 200) {
             request.response.forEach(track => {
                     const row = document.createElement("div")
+                    row.style.marginBottom = "10px"
+                    row.style.borderColor = "dimgrey"
+                    row.style.border = "1px"
                     row.className = "row track"
                     row.id = "track_" + track["track_id"]
-
 
                     const name = document.createElement("div")
                     name.className = "col-3"
