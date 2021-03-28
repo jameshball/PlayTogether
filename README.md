@@ -1,6 +1,6 @@
 # PlayTogether
 
-PlayTogether allows members to use other members' recordings as their backing tracks, leading to more cohesive playing. As more members submit their recordings, the backing track becomes more complete, making it easier to play in time and with more energy than when recording to a metronome.
+[PlayTogether](https://play--together.herokuapp.com/) allows members to use other members' recordings as their backing tracks, leading to more cohesive playing. As more members submit their recordings, the backing track becomes more complete, making it easier to play in time and with more energy than when recording to a metronome.
 
 PlayTogether won 'Most innovative use of the Web' after its initial development during IC Hello World Hack 21.
 
