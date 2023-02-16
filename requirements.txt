@@ -15,4 +15,4 @@ pynput==1.7.3
 six==1.15.0
 SQLAlchemy==1.4.3
 toml==0.10.2
-Werkzeug==1.0.1
+Werkzeug==2.2.3
